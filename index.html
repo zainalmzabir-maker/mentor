@@ -195,7 +195,7 @@
         </div>
       </div>
 
-      <!-- Senarai Laporan Terkini dengan Butang Kemaskini (Buka Tab Baharu) -->
+      <!-- Senarai Laporan Terkini di Dashboard -->
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
         <h3 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
           <i data-lucide="link" class="w-4 h-4 text-indigo-600"></i> Rekod & Pautan Laporan OPR yang Telah Diisi
@@ -219,7 +219,6 @@
         </div>
 
         <div class="w-full md:w-auto flex flex-wrap items-center gap-2">
-          <!-- BUTANG KEMASKINI LAPORAN TERPILIH DI TAB BAHARU -->
           <button id="btnEditReportTop" onclick="kemaskiniLaporanOpr()" class="hidden w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-sm transition">
             <i data-lucide="edit-3" class="w-4 h-4"></i> Kemaskini Laporan OPR (Tab Baharu)
           </button>
@@ -244,7 +243,7 @@
 
         <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 max-w-md mx-auto text-xs text-left mb-6 space-y-2">
           <div class="flex justify-between"><span class="text-slate-500">Guru Mentor:</span><span id="noReportMentor" class="font-bold text-slate-800">-</span></div>
-          <div class="flex justify-between"><span class="text-slate-500">Unit Terlibat:</span><span class="font-bold text-blue-700">Hal Ehwal Murid (HEM)</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Aktiviti Unit:</span><span class="font-bold text-blue-700">Hal Ehwal Murid (HEM)</span></div>
           <div class="flex justify-between"><span class="text-slate-500">Pangkalan Data:</span><span class="font-bold text-rose-600">Belum Direkod di opr.semekar.com</span></div>
         </div>
 
@@ -310,7 +309,7 @@
       </div>
 
       <p class="text-xs text-slate-500 mb-4 bg-slate-50 p-2.5 rounded-xl border border-slate-200 font-medium" id="modalPilihMenteeTitle">Mentee: -</p>
-      <p class="text-xs text-slate-600 mb-2 font-semibold">Pilih pertemuan yang ingin diedit di <strong class="text-blue-700">opr.semekar.com</strong>:</p>
+      <p class="text-xs text-slate-600 mb-2 font-semibold">Pilih pertemuan yang ingin diedit di <strong class="text-blue-700">opr.semekar.com</strong> (Unit HEM):</p>
 
       <div id="senaraiSesiUntukEdit" class="space-y-2 max-h-72 overflow-y-auto pr-1"></div>
 
@@ -405,7 +404,6 @@
       }, 5000);
     }
 
-    // 1. CARI REKOD LAPORAN UNTUK SESI
     function findReportForSession(bil, sesiNum) {
       if (!laporanList || laporanList.length === 0) return null;
       const target = parseInt(sesiNum);
@@ -428,9 +426,9 @@
       return null;
     }
 
-    // 2. BINA URL MOD EDIT TEPAT UNTUK OPR.SEMEKAR.COM
+    // BINA URL MOD EDIT DENGAN UNIT KEKAL HEM
     function binaUrlEditOpr(oprUrl, bil, sesi) {
-      if (!oprUrl) return 'https://opr.semekar.com';
+      if (!oprUrl) return 'https://opr.semekar.com/?unit=HEM';
 
       let repId = '';
       const match = String(oprUrl).match(/(REP-\d+|OPR-\d+)/);
@@ -445,13 +443,15 @@
       const returnUrl = window.location.origin + window.location.pathname;
       const mentee = menteesData.find(m => m.bil === parseInt(bil));
 
-      // Hantar ID dalam hash (#id=...) dan query param (?id=...&mode=edit)
-      // supaya skrip pemuat sedia ada di opr.semekar.com membaca ID dan memuatkan rekod tersebut
+      // HANTAR SEMUA PARAMETER UNIT KEPADA HEM
       const params = new URLSearchParams({
-        mode: 'edit',
         action: 'edit',
+        mode: 'edit',
         id: repId,
         unit: 'HEM',
+        Unit: 'HEM',
+        aktiviti_unit: 'HEM',
+        kategori: 'HEM',
         bil: bil || '',
         sesi: sesi || '',
         mentee: mentee ? mentee.nama : '',
@@ -460,17 +460,15 @@
         return_url: returnUrl
       });
 
-      return `https://opr.semekar.com/?${params.toString()}#id=${encodeURIComponent(repId)}&mode=edit`;
+      return `https://opr.semekar.com/?${params.toString()}#id=${encodeURIComponent(repId)}&unit=HEM&mode=edit`;
     }
 
-    // 3. BUKA EDIT OPR DALAM TAB BAHARU
     function bukaEditOprTab(oprUrl, bil, sesi) {
       const editUrl = binaUrlEditOpr(oprUrl, bil, sesi);
       window.open(editUrl, '_blank');
-      tunjukToast(`Membuka borang kemaskini di tab baharu...`);
+      tunjukToast(`Membuka borang kemaskini di tab baharu (Unit HEM)...`);
     }
 
-    // 4. MODAL PILIHAN SESI UNTUK DIKEMASKINI (DARI PAGE 1)
     function openPilihKemaskiniModal(bil) {
       const mentee = menteesData.find(m => m.bil === bil);
       if (!mentee) return;
@@ -518,7 +516,6 @@
       document.getElementById('pilihKemaskiniModal').classList.add('hidden');
     }
 
-    // 5. KEMASKINI DARI HALAMAN CETAK LAPORAN (PAGE 3)
     function kemaskiniLaporanOpr() {
       const bil = parseInt(document.getElementById('reportMenteeSelect').value);
       const sesi = document.getElementById('reportSesiSelect').value;
@@ -532,7 +529,6 @@
       bukaEditOprTab(matchedRecord.oprUrl, bil, sesi);
     }
 
-    // 6. CALLBACK DARI OPR.SEMEKAR.COM
     async function semakCallbackOpr() {
       const urlParams = new URLSearchParams(window.location.search);
       const status = urlParams.get('status');
@@ -600,7 +596,6 @@
       }
     }
 
-    // 7. ISI LAPORAN BAHARU KE OPR.SEMEKAR.COM
     function pergiKeOprHem(bil, sesiKhusus) {
       const mentee = menteesData.find(m => m.bil === bil);
       if (!mentee) return;
@@ -611,6 +606,9 @@
 
       const params = new URLSearchParams({
         unit: 'HEM',
+        Unit: 'HEM',
+        aktiviti_unit: 'HEM',
+        kategori: 'HEM',
         aktiviti: `Program Mentor Mentee SPM (Siri ${sesiTarget})`,
         nama_pelapor: mentee.mentor,
         mentee: mentee.nama,
@@ -620,9 +618,9 @@
         return_url: returnUrl
       });
 
-      const urlOpr = `https://opr.semekar.com/?${params.toString()}`;
+      const urlOpr = `https://opr.semekar.com/?${params.toString()}#unit=HEM`;
       window.open(urlOpr, '_blank');
-      tunjukToast("Membuka borang OPR di tab baharu...");
+      tunjukToast("Membuka borang OPR di tab baharu (Unit HEM)...");
     }
 
     function pergiKeOprDariLaporan() {
@@ -631,7 +629,6 @@
       pergiKeOprHem(bil, sesi);
     }
 
-    // 8. AMBIL DATA DARI GOOGLE SHEETS
     async function fetchDataFromSheet() {
       showLoadingDialog(
         "Menyegerakkan Data Terkini...", 
@@ -672,7 +669,6 @@
       await semakCallbackOpr();
     });
 
-    // 9. NAVIGASI TAB
     function switchTab(tabId) {
       ['senarai', 'dashboard', 'laporan'].forEach(tab => {
         document.getElementById(`page-${tab}`).classList.add('hidden');
@@ -705,7 +701,6 @@
       select.value = currentVal || 'ALL';
     }
 
-    // 10. PAPARAN KAD MENTEE (PAGE 1)
     function renderMentees() {
       const filter = document.getElementById('mentorFilter').value;
       const search = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -801,7 +796,6 @@
       switchTab('laporan');
     }
 
-    // 11. PENGENDALIAN KAMERA TELEFON & GAMBAR
     function openImageModal(bil, nama) {
       activeMenteeForModal = bil;
       const mentee = menteesData.find(m => m.bil === bil);
@@ -923,7 +917,6 @@
       }
     }
 
-    // 12. DASHBOARD DENGAN BUTANG KEMASKINI SETIAP REKOD
     let classChartInstance = null;
     let sessionChartInstance = null;
 
@@ -1043,7 +1036,6 @@
       });
     }
 
-    // 13. HALAMAN CETAKAN & PAPARAN OPR (PAGE 3)
     function populateReportMenteeDropdown() {
       const select = document.getElementById('reportMenteeSelect');
       const currentVal = select.value;
