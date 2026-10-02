@@ -297,7 +297,7 @@
 
   </main>
 
-  <!-- ================= MODAL GAMBAR MENTEE (DENGAN BUTANG KAMERA TELEFON) ================= -->
+  <!-- ================= MODAL GAMBAR MENTEE ================= -->
   <div id="imageModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 flex items-center justify-center p-4 hidden no-print">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
       <div class="flex justify-between items-center mb-3">
@@ -310,9 +310,9 @@
       <p class="text-xs text-slate-500 mb-4 bg-slate-50 p-2.5 rounded-xl border border-slate-200 font-medium" id="modalMenteeName">Mentee: -</p>
 
       <div class="space-y-4">
-        <!-- BUTANG-BUTANG PILIHAN MUAT NAIK -->
+        <!-- BUTANG PILIHAN MUAT NAIK -->
         <div class="grid grid-cols-2 gap-3">
-          <!-- Butang 1: Kamera Telefon Pintar (Mobile Camera Direct) -->
+          <!-- Butang 1: Kamera Telefon Pintar -->
           <button type="button" onclick="document.getElementById('cameraInput').click()" class="flex flex-col items-center justify-center gap-2 p-4 bg-blue-50 hover:bg-blue-100 border-2 border-dashed border-blue-300 rounded-2xl text-blue-800 transition active:scale-95">
             <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-md">
               <i data-lucide="camera" class="w-5 h-5"></i>
@@ -321,7 +321,7 @@
             <span class="text-[10px] text-blue-600 font-medium">Buka Kamera Telefon</span>
           </button>
 
-          <!-- Butang 2: Pilih Dari Galeri / Fail -->
+          <!-- Butang 2: Pilih Dari Galeri -->
           <button type="button" onclick="document.getElementById('galleryInput').click()" class="flex flex-col items-center justify-center gap-2 p-4 bg-slate-50 hover:bg-slate-100 border-2 border-dashed border-slate-300 rounded-2xl text-slate-700 transition active:scale-95">
             <div class="w-10 h-10 rounded-full bg-slate-700 text-white flex items-center justify-center shadow-md">
               <i data-lucide="image" class="w-5 h-5"></i>
@@ -331,18 +331,17 @@
           </button>
         </div>
 
-        <!-- Input Tersembunyi untuk Kamera & Galeri -->
-        <!-- capture="environment" mengaktifkan kamera belakang telefon -->
+        <!-- Input Tersembunyi -->
         <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden" onchange="handleFileSelect(this)">
         <input type="file" id="galleryInput" accept="image/*" class="hidden" onchange="handleFileSelect(this)">
 
-        <!-- Pilihan 3: Pautan URL Luar -->
+        <!-- Pilihan Pautan URL -->
         <div>
-          <label class="block text-[11px] font-semibold text-slate-500 mb-1">Atau Masukkan Pautan URL Foto:</label>
+          <label class="block text-[11px] font-semibold text-slate-500 mb-1">Atau Pautan URL Gambar:</label>
           <input type="url" id="imageUrlInput" placeholder="https://..." class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500" oninput="onUrlInput(this.value)">
         </div>
 
-        <!-- Pratonton Foto yang Dipilih -->
+        <!-- Pratonton Foto -->
         <div id="imagePreviewContainer" class="hidden text-center pt-2">
           <p class="text-[11px] text-slate-400 mb-1 font-semibold">Pratonton Foto:</p>
           <div class="relative inline-block">
@@ -351,7 +350,6 @@
           </div>
         </div>
 
-        <!-- Butang Tindakan Simpan / Batal -->
         <div class="flex gap-2 pt-2">
           <button id="btnSavePhoto" onclick="saveMenteePhoto()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs transition flex justify-center items-center gap-2 shadow-sm">
             Simpan Gambar Mentee
@@ -390,7 +388,6 @@
       }, 5000);
     }
 
-    // 1. CARI REKOD LAPORAN UNTUK SESI
     function findReportForSession(bil, sesiNum) {
       if (!laporanList || laporanList.length === 0) return null;
       const target = parseInt(sesiNum);
@@ -413,7 +410,6 @@
       return null;
     }
 
-    // 2. CALLBACK DARI OPR.SEMEKAR.COM
     async function semakCallbackOpr() {
       const urlParams = new URLSearchParams(window.location.search);
       const status = urlParams.get('status');
@@ -451,7 +447,6 @@
       }
     }
 
-    // 3. BUTANG ISI LAPORAN KE OPR.SEMEKAR.COM
     function pergiKeOprHem(bil, sesiKhusus) {
       const mentee = menteesData.find(m => m.bil === bil);
       if (!mentee) return;
@@ -488,7 +483,6 @@
       pergiKeOprHem(bil, sesi);
     }
 
-    // 4. AMBIL DATA DARI GOOGLE SHEETS
     async function fetchDataFromSheet() {
       showLoadingDialog(
         "Menyegerakkan Data Terkini...", 
@@ -529,7 +523,6 @@
       await semakCallbackOpr();
     });
 
-    // 5. NAVIGASI TAB
     function switchTab(tabId) {
       ['senarai', 'dashboard', 'laporan'].forEach(tab => {
         document.getElementById(`page-${tab}`).classList.add('hidden');
@@ -562,7 +555,6 @@
       select.value = currentVal || 'ALL';
     }
 
-    // 6. PAPARAN KAD MENTEE (PAGE 1)
     function renderMentees() {
       const filter = document.getElementById('mentorFilter').value;
       const search = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -654,7 +646,7 @@
       switchTab('laporan');
     }
 
-    // ================= 7. PENGENDALIAN KAMERA TELEFON & KOMPRESI GAMBAR =================
+    // ================= PENGENDALIAN KAMERA TELEFON & MAMPATAN IMEJ =================
     function openImageModal(bil, nama) {
       activeMenteeForModal = bil;
       const mentee = menteesData.find(m => m.bil === bil);
@@ -686,12 +678,10 @@
       }
     }
 
-    // PENGURUSAN FAIL DARI KAMERA ATAU GALERI
     function handleFileSelect(inputElement) {
       const file = inputElement.files[0];
       if (!file) return;
 
-      // Paparkan status sedang memproses imej
       const previewContainer = document.getElementById('imagePreviewContainer');
       const preview = document.getElementById('imagePreview');
       previewContainer.classList.remove('hidden');
@@ -700,9 +690,9 @@
       reader.onload = function(e) {
         const img = new Image();
         img.onload = function() {
-          // Lakukan mampatan Canvas (maksimum 500px, kualiti 0.75 JPEG)
-          // Menukar foto 5MB dari kamera telefon kepada ~30KB sahaja
-          const maxDim = 500;
+          // MAMPATKAN KEPADA MAKSIMUM 240px (SAIZ PROFIL PASPORT)
+          // Menghasilkan rentetan ringan (~15KB) yang kalis sekatan Google Sheet
+          const maxDim = 240;
           let width = img.width;
           let height = img.height;
 
@@ -724,8 +714,7 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
 
-          // Jana Base64 mampat
-          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.65);
           document.getElementById('imageUrlInput').value = compressedDataUrl;
           preview.src = compressedDataUrl;
         };
@@ -738,13 +727,15 @@
       const photoUrl = document.getElementById('imageUrlInput').value.trim();
       if (!activeMenteeForModal) return;
 
+      const bilTarget = activeMenteeForModal;
       closeImageModal();
       showLoadingDialog(
         "Menyimpan Foto Mentee...", 
-        "Sedang memuat naik foto ke Google Drive & merekodkan pautan ke Google Sheets..."
+        "Sedang memuat naik foto ke pangkalan data Google Sheets..."
       );
 
-      const mentee = menteesData.find(m => m.bil === activeMenteeForModal);
+      // Kemaskini paparan lokal serta merta
+      const mentee = menteesData.find(m => m.bil === bilTarget);
       if (mentee) {
         mentee.photoUrl = photoUrl;
         renderMentees();
@@ -752,32 +743,35 @@
       }
 
       try {
-        await fetch(SCRIPT_URL, {
+        const response = await fetch(SCRIPT_URL, {
           method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({
             action: 'updatePhoto',
-            bil: activeMenteeForModal,
+            bil: bilTarget,
             photoUrl: photoUrl
           })
         });
 
-        // Tunggu sebentar dan segerak semula untuk memastikan link Google Drive ditarik
-        setTimeout(async () => {
-          await fetchDataFromSheet();
-          hideLoadingDialog();
-          tunjukToast("Foto mentee berjaya disimpan secara kekal!");
-        }, 1500);
+        if (response.ok) {
+          const res = await response.json();
+          if (res && res.photoUrl) {
+            if (mentee) mentee.photoUrl = res.photoUrl;
+            renderMentees();
+            localStorage.setItem('semekar_mentees_cache', JSON.stringify(menteesData));
+          }
+        }
 
-      } catch (err) {
-        console.error("Ralat simpan gambar:", err);
         hideLoadingDialog();
-        tunjukToast("Foto disimpan dalam peranti.");
+        tunjukToast("Foto mentee berjaya disimpan secara kekal!");
+      } catch (err) {
+        console.warn("Ralat rangkaian foto:", err);
+        hideLoadingDialog();
+        tunjukToast("Foto mentee disimpan dalam peranti.");
       }
     }
 
-    // 8. DASHBOARD & ANALITIK
+    // DASHBOARD & ANALITIK
     let classChartInstance = null;
     let sessionChartInstance = null;
 
@@ -890,7 +884,6 @@
       });
     }
 
-    // 9. HALAMAN CETAKAN OPR (PAGE 3 - TUNGGAL DARI OPR.SEMEKAR.COM)
     function populateReportMenteeDropdown() {
       const select = document.getElementById('reportMenteeSelect');
       const currentVal = select.value;
