@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistem Mentor Mentee SPM - SMK Kamarul Ariffin (SEMEKAR)</title>
   
-  <!-- FAVICON DARI GITHUB REPO (logo.png) -->
+  <!-- FAVICON & ICON DARI REPO GITHUB (logo.png) -->
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
 
@@ -25,19 +25,40 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
 
-  <!-- NOTIFIKASI AUTOMATIK APABILA KEMBALI DARI OPR.SEMEKAR.COM -->
-  <div id="toastNotification" class="fixed top-5 right-5 z-50 bg-emerald-600 text-white px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 transition-all duration-300 transform translate-y-[-100px] opacity-0 no-print">
+  <!-- ================= DIALOG PEMAKLUMAN SEDANG KEMASKINI DATA ================= -->
+  <div id="loadingDialog" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print transition-opacity duration-200">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 text-center flex flex-col items-center animate-bounce-short">
+      <!-- Ikon Animasi Berpusing -->
+      <div class="relative w-16 h-16 mb-4 flex items-center justify-center">
+        <div class="absolute inset-0 rounded-full border-4 border-blue-100"></div>
+        <div class="absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent animate-spin"></div>
+        <i data-lucide="refresh-cw" class="w-6 h-6 text-blue-600"></i>
+      </div>
+
+      <!-- Tajuk & Penerangan Dialog -->
+      <h3 id="loadingTitle" class="font-extrabold text-base text-slate-900 mb-1">Sedang Mengemaskini Data...</h3>
+      <p id="loadingDesc" class="text-xs text-slate-500 mb-4 leading-relaxed">Sila tunggu sebentar sementara sistem memproses dan menyegerakkan data ke Google Sheets.</p>
+      
+      <!-- Bar Kemajuan Visual Animasi -->
+      <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+        <div class="bg-blue-600 h-full rounded-full animate-pulse w-full"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFIKASI KEJAYAAN -->
+  <div id="toastNotification" class="fixed top-5 right-5 z-40 bg-emerald-600 text-white px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 transition-all duration-300 transform translate-y-[-100px] opacity-0 no-print">
     <div class="bg-white/20 p-2 rounded-xl">
       <i data-lucide="check-circle-2" class="w-6 h-6"></i>
     </div>
     <div>
-      <h4 class="font-bold text-sm">Laporan OPR Berjaya Disimpan!</h4>
-      <p id="toastMessage" class="text-xs text-emerald-100">1 perjumpaan telah ditambah secara automatik.</p>
+      <h4 class="font-bold text-sm">Berjaya Dikemaskini!</h4>
+      <p id="toastMessage" class="text-xs text-emerald-100">Maklumat telah disegerak ke pangkalan data.</p>
     </div>
   </div>
 
   <!-- HEADER DENGAN LOGO SEMEKAR -->
-  <header class="bg-gradient-to-r from-blue-900 via-indigo-900 to-blue-950 text-white shadow-lg sticky top-0 z-40 no-print">
+  <header class="bg-gradient-to-r from-blue-900 via-indigo-900 to-blue-950 text-white shadow-lg sticky top-0 z-30 no-print">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
       <div class="flex items-center space-x-3">
         <div class="bg-white/10 p-1.5 rounded-xl backdrop-blur-md flex items-center justify-center border border-white/20">
@@ -72,7 +93,6 @@
 
     <!-- ================= PAGE 1: SENARAI MENTOR MENTEE ================= -->
     <section id="page-senarai" class="space-y-6">
-      <!-- Carian & Penapis -->
       <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-4 items-center justify-between">
         <div class="w-full md:w-1/3">
           <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Pilih Guru Mentor:</label>
@@ -92,17 +112,12 @@
         <div class="w-full md:w-auto flex items-end">
           <div class="bg-blue-50 border border-blue-200 text-blue-800 text-xs px-4 py-2.5 rounded-xl flex items-center gap-2">
             <i data-lucide="shield-check" class="w-4 h-4 text-blue-600 shrink-0"></i>
-            <span>Butang laporan terus ke <strong>opr.semekar.com (Unit HEM)</strong>.</span>
+            <span>Pelaporan rasmi terus di bawah <strong>opr.semekar.com (Unit HEM)</strong>.</span>
           </div>
         </div>
       </div>
 
-      <!-- Penunjuk Menyegerak -->
-      <div id="loadingStatus" class="hidden text-center py-4 text-sm text-blue-600 font-semibold">
-        <i data-lucide="loader-2" class="w-5 h-5 inline animate-spin mr-2"></i> Menyegerakkan rekod bersama Google Sheet...
-      </div>
-
-      <!-- Grid Senarai Mentee -->
+      <!-- Grid Mentee -->
       <div id="menteeGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
     </section>
 
@@ -309,7 +324,7 @@
   </main>
 
   <!-- Modal Kemaskini Gambar Mentee -->
-  <div id="imageModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+  <div id="imageModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 flex items-center justify-center p-4 hidden no-print">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
       <div class="flex justify-between items-center mb-4">
         <h3 class="font-bold text-base text-slate-800">Muat Naik Gambar Mentee</h3>
@@ -398,6 +413,27 @@
     let laporanList = JSON.parse(localStorage.getItem('semekar_laporan_list') || '[]');
     let activeMenteeForModal = null;
 
+    // FUNGSI KAWALAN DIALOG PEMAKLUMAN
+    function showLoadingDialog(title, desc) {
+      document.getElementById('loadingTitle').textContent = title || "Sedang Mengemaskini Data...";
+      document.getElementById('loadingDesc').textContent = desc || "Sila tunggu sebentar sementara sistem memproses data anda.";
+      document.getElementById('loadingDialog').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function hideLoadingDialog() {
+      document.getElementById('loadingDialog').classList.add('hidden');
+    }
+
+    function tunjukToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.remove('translate-y-[-100px]', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-[-100px]', 'opacity-0');
+      }, 5000);
+    }
+
     // 1. PENGESAN BALIK AUTOMATIK (CALLBACK LISTENER)
     async function semakCallbackOpr() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -406,13 +442,17 @@
       const oprLink = urlParams.get('link') || urlParams.get('opr_link') || 'https://opr.semekar.com';
 
       if (status === 'selesai' && bil) {
+        showLoadingDialog(
+          "Merekodkan Laporan OPR...", 
+          "Laporan telah diterima daripada opr.semekar.com. Sedang mengemaskini pertemuan dan rekod Google Sheets..."
+        );
+
         const mentee = menteesData.find(m => m.bil === bil);
         if (mentee) {
           const sesiBaharu = Math.min(8, (mentee.reports || 0) + 1);
           mentee.reports = sesiBaharu;
           mentee.latestOprLink = oprLink;
 
-          // Catat ke senarai laporan tempatan
           const newRecord = {
             bil: bil,
             nama: mentee.nama,
@@ -427,7 +467,6 @@
           localStorage.setItem('semekar_laporan_list', JSON.stringify(laporanList));
           localStorage.setItem('semekar_mentees_cache', JSON.stringify(menteesData));
 
-          // Simpan secara automatik ke Google Sheet (Mentee & Laporan_OPR)
           try {
             await fetch(SCRIPT_URL, {
               method: 'POST',
@@ -444,80 +483,54 @@
               })
             });
           } catch (e) {
-            console.error("Gagal menyimpan ke Sheet:", e);
+            console.error("Gagal simpan ke Sheet:", e);
           }
 
-          // Tunjuk popup kejayaan
+          hideLoadingDialog();
           tunjukToast(`Pertemuan ${sesiBaharu} bagi ${mentee.nama} disahkan secara automatik!`);
-
-          // Bersihkan URL tanpa reload
           window.history.replaceState({}, document.title, window.location.pathname);
+        } else {
+          hideLoadingDialog();
         }
       }
     }
 
-    // 2. MENDENGAR MESEJ POSTMESSAGE JIKA OPR DIBUKA MELALUI POPUP
-    window.addEventListener('message', async (event) => {
-      if (event.data && event.data.type === 'OPR_SELESAI') {
-        const { bil, link } = event.data;
-        const mentee = menteesData.find(m => m.bil === parseInt(bil));
-        if (mentee) {
-          const sesiBaharu = Math.min(8, (mentee.reports || 0) + 1);
-          mentee.reports = sesiBaharu;
-          mentee.latestOprLink = link;
-
-          renderMentees();
-          updateDashboardStats();
-          tunjukToast(`Laporan OPR diterima! 1 pertemuan ditambah untuk ${mentee.nama}.`);
-        }
-      }
-    });
-
-    // 3. BUTANG KLIK ISI LAPORAN KE opr.semekar.com (UNIT HEM AUTO)
+    // 2. BUTANG KLIK ISI LAPORAN KE opr.semekar.com
     function pergiKeOprHem(bil) {
       const mentee = menteesData.find(m => m.bil === bil);
       if (!mentee) return;
 
-      // Dapatkan URL asal web mentor mentee ini untuk callback
+      showLoadingDialog(
+        "Membuka Portal OPR...", 
+        "Menyediakan borang pelaporan Unit HEM di opr.semekar.com..."
+      );
+
       const returnUrl = window.location.origin + window.location.pathname;
       const sesiSeterusnya = Math.min(8, (mentee.reports || 0) + 1);
 
-      // BINA URL LENGKAP KE opr.semekar.com BERSAMA PARAMETER UNIT HEM
       const params = new URLSearchParams({
-        unit: 'HEM',                                   // Automatik Unit HEM
+        unit: 'HEM',
         aktiviti: `Program Mentor Mentee SPM (Siri ${sesiSeterusnya})`,
         nama_pelapor: mentee.mentor,
         mentee: mentee.nama,
         kelas: mentee.kelas,
         bil: mentee.bil,
         sesi: sesiSeterusnya,
-        return_url: returnUrl                          // Pautan untuk kembali semula ke sini
+        return_url: returnUrl
       });
 
       const urlOpr = `https://opr.semekar.com/?${params.toString()}`;
-
-      // Simpan rujukan sesi aktif
-      sessionStorage.setItem('pending_mentee_bil', mentee.bil);
-      sessionStorage.setItem('pending_mentee_sesi', sesiSeterusnya);
-
-      // Buka borang di opr.semekar.com
-      window.location.href = urlOpr;
-    }
-
-    // Paparan Toast
-    function tunjukToast(msg) {
-      const toast = document.getElementById('toastNotification');
-      document.getElementById('toastMessage').textContent = msg;
-      toast.classList.remove('translate-y-[-100px]', 'opacity-0');
       setTimeout(() => {
-        toast.classList.add('translate-y-[-100px]', 'opacity-0');
-      }, 5000);
+        window.location.href = urlOpr;
+      }, 500);
     }
 
-    // Ambil Data dari Google Sheets
+    // 3. AMBIL DATA DARI GOOGLE SHEETS
     async function fetchDataFromSheet() {
-      const loadingEl = document.getElementById('loadingStatus');
-      loadingEl.classList.remove('hidden');
+      showLoadingDialog(
+        "Menyegerakkan Data Terkini...", 
+        "Sedang menyemak pangkalan data Google Sheets untuk senarai mentee dan bilangan laporan..."
+      );
 
       try {
         const response = await fetch(`${SCRIPT_URL}?action=getMentees`);
@@ -539,7 +552,7 @@
         const cached = localStorage.getItem('semekar_mentees_cache');
         if (cached) menteesData = JSON.parse(cached);
       } finally {
-        loadingEl.classList.add('hidden');
+        hideLoadingDialog();
         await semakCallbackOpr();
         populateMentorFilter();
         renderMentees();
@@ -553,7 +566,7 @@
       fetchDataFromSheet();
     });
 
-    // Pertukaran Tab
+    // 4. NAVIGASI TAB
     function switchTab(tabId) {
       ['senarai', 'dashboard', 'laporan'].forEach(tab => {
         document.getElementById(`page-${tab}`).classList.add('hidden');
@@ -586,7 +599,7 @@
       select.value = currentVal || 'ALL';
     }
 
-    // Paparan Kad Mentee
+    // 5. PAPARAN KAD MENTEE
     function renderMentees() {
       const filter = document.getElementById('mentorFilter').value;
       const search = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -610,7 +623,6 @@
         card.innerHTML = `
           <div>
             <div class="flex items-center gap-4 mb-4">
-              <!-- Foto Mentee -->
               <div class="relative group cursor-pointer" onclick="openImageModal(${m.bil}, '${m.nama.replace(/'/g, "\\'")}')" title="Klik untuk muat naik gambar">
                 <div class="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shadow-inner">
                   ${m.photoUrl 
@@ -623,7 +635,6 @@
                 </div>
               </div>
 
-              <!-- Maklumat Murid -->
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-0.5">
                   <span class="px-2 py-0.5 bg-blue-100 text-blue-700 font-bold text-[10px] rounded-md">${m.kelas}</span>
@@ -636,7 +647,6 @@
               </div>
             </div>
 
-            <!-- Kemajuan Pertemuan -->
             <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 mb-3">
               <div class="flex justify-between text-xs mb-1">
                 <span class="text-slate-500 font-medium">Status Pertemuan SPM:</span>
@@ -647,11 +657,10 @@
               </div>
             </div>
 
-            <!-- Pautan Laporan OPR yang Telah Diisi (Jika Ada) -->
             ${m.latestOprLink ? `
               <div class="mb-3 px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between text-xs text-emerald-800">
                 <span class="truncate flex items-center gap-1.5 font-semibold">
-                  <i data-lucide="file-check" class="w-3.5 h-3.5 text-emerald-600"></i> OPR Sesi Terkini:
+                  <i data-lucide="file-check" class="w-3.5 h-3.5 text-emerald-600"></i> OPR Terkini:
                 </span>
                 <a href="${m.latestOprLink}" target="_blank" class="text-blue-600 hover:underline font-bold shrink-0 ml-2 flex items-center gap-1">
                   Buka OPR <i data-lucide="external-link" class="w-3 h-3"></i>
@@ -660,7 +669,6 @@
             ` : ''}
           </div>
 
-          <!-- BUTANG TERUS KE PENGISIAN OPR HEM DI opr.semekar.com -->
           <div class="pt-2 border-t border-slate-100 flex items-center gap-2">
             <button onclick="pergiKeOprHem(${m.bil})" 
               class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm transition">
@@ -681,7 +689,7 @@
       switchTab('laporan');
     }
 
-    // Modal Gambar Mentee
+    // 6. MODAL GAMBAR MENTEE
     function openImageModal(bil, nama) {
       activeMenteeForModal = bil;
       const mentee = menteesData.find(m => m.bil === bil);
@@ -719,9 +727,14 @@
     });
 
     async function saveMenteePhoto() {
-      const btn = document.getElementById('btnSavePhoto');
       const photoUrl = document.getElementById('imageUrlInput').value.trim();
       if (!activeMenteeForModal) return;
+
+      closeImageModal();
+      showLoadingDialog(
+        "Menyimpan Gambar Mentee...", 
+        "Sedang memuat naik dan merekodkan gambar mentee ke dalam Google Sheets..."
+      );
 
       const mentee = menteesData.find(m => m.bil === activeMenteeForModal);
       if (mentee) {
@@ -729,9 +742,6 @@
         renderMentees();
         localStorage.setItem('semekar_mentees_cache', JSON.stringify(menteesData));
       }
-
-      btn.disabled = true;
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Menyimpan...`;
 
       try {
         await fetch(SCRIPT_URL, {
@@ -747,13 +757,12 @@
       } catch (err) {
         console.error("Ralat simpan gambar:", err);
       } finally {
-        btn.disabled = false;
-        btn.innerHTML = `Simpan Gambar`;
-        closeImageModal();
+        hideLoadingDialog();
+        tunjukToast("Gambar mentee berjaya disimpan ke Google Sheet!");
       }
     }
 
-    // Dashboard & Graf
+    // 7. DASHBOARD & ANALITIK
     let classChartInstance = null;
     let sessionChartInstance = null;
 
@@ -791,7 +800,6 @@
         tbody.appendChild(tr);
       }
 
-      // Senarai Pautan Rekod Laporan OPR
       const recentContainer = document.getElementById('recentReportsContainer');
       if (recentContainer) {
         if (laporanList.length === 0) {
@@ -867,7 +875,7 @@
       });
     }
 
-    // Halaman Cetakan OPR
+    // 8. HALAMAN CETAKAN OPR
     function populateReportMenteeDropdown() {
       const select = document.getElementById('reportMenteeSelect');
       select.innerHTML = '';
