@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistem Mentor Mentee SPM - SMK Kamarul Ariffin (SEMEKAR)</title>
   
-  <!-- FAVICON & ICON DARI REPO GITHUB (logo.png) -->
+  <!-- FAVICON DARI GITHUB REPO (logo.png) -->
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
 
@@ -25,8 +25,19 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
 
+  <!-- NOTIFIKASI AUTOMATIK APABILA KEMBALI DARI OPR.SEMEKAR.COM -->
+  <div id="toastNotification" class="fixed top-5 right-5 z-50 bg-emerald-600 text-white px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 transition-all duration-300 transform translate-y-[-100px] opacity-0 no-print">
+    <div class="bg-white/20 p-2 rounded-xl">
+      <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+    </div>
+    <div>
+      <h4 class="font-bold text-sm">Laporan OPR Berjaya Disimpan!</h4>
+      <p id="toastMessage" class="text-xs text-emerald-100">1 perjumpaan telah ditambah secara automatik.</p>
+    </div>
+  </div>
+
   <!-- HEADER DENGAN LOGO SEMEKAR -->
-  <header class="bg-gradient-to-r from-blue-900 via-indigo-900 to-blue-950 text-white shadow-lg sticky top-0 z-50 no-print">
+  <header class="bg-gradient-to-r from-blue-900 via-indigo-900 to-blue-950 text-white shadow-lg sticky top-0 z-40 no-print">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
       <div class="flex items-center space-x-3">
         <div class="bg-white/10 p-1.5 rounded-xl backdrop-blur-md flex items-center justify-center border border-white/20">
@@ -35,7 +46,7 @@
         <div>
           <h1 class="font-bold text-lg leading-tight tracking-wide flex items-center gap-2">
             PROGRAM MENTOR MENTEE SPM
-            <span id="syncIndicator" class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400" title="Tersambung ke Google Sheet"></span>
+            <span id="syncIndicator" class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400" title="Google Sheet Aktif"></span>
           </h1>
           <p class="text-xs text-blue-200">Unit Hal Ehwal Murid (HEM) • SMK Kamarul Ariffin (SEMEKAR)</p>
         </div>
@@ -79,25 +90,24 @@
         </div>
 
         <div class="w-full md:w-auto flex items-end">
-          <a href="https://opr.semekar.com" target="_blank" rel="noopener noreferrer" class="w-full md:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium px-4 py-2.5 rounded-xl border border-slate-300 flex items-center gap-2 transition">
-            <i data-lucide="external-link" class="w-4 h-4 text-blue-600"></i>
-            <span>Portal Rasmi: <strong>opr.semekar.com</strong></span>
-          </a>
+          <div class="bg-blue-50 border border-blue-200 text-blue-800 text-xs px-4 py-2.5 rounded-xl flex items-center gap-2">
+            <i data-lucide="shield-check" class="w-4 h-4 text-blue-600 shrink-0"></i>
+            <span>Butang laporan terus ke <strong>opr.semekar.com (Unit HEM)</strong>.</span>
+          </div>
         </div>
       </div>
 
-      <!-- Penunjuk Muat Data -->
+      <!-- Penunjuk Menyegerak -->
       <div id="loadingStatus" class="hidden text-center py-4 text-sm text-blue-600 font-semibold">
-        <i data-lucide="loader-2" class="w-5 h-5 inline animate-spin mr-2"></i> Menyegerak data bersama Google Sheets...
+        <i data-lucide="loader-2" class="w-5 h-5 inline animate-spin mr-2"></i> Menyegerakkan rekod bersama Google Sheet...
       </div>
 
-      <!-- Grid Mentee -->
+      <!-- Grid Senarai Mentee -->
       <div id="menteeGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
     </section>
 
     <!-- ================= PAGE 2: DASHBOARD ================= -->
     <section id="page-dashboard" class="space-y-6 hidden">
-      <!-- Metrik Kad Ringkasan -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
           <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
@@ -131,11 +141,11 @@
 
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
           <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold">
-            <i data-lucide="file-check" class="w-6 h-6"></i>
+            <i data-lucide="file-check-2" class="w-6 h-6"></i>
           </div>
           <div>
             <div class="text-2xl font-black text-slate-800" id="totalLaporanDone">0</div>
-            <div class="text-xs text-slate-500 font-medium">Laporan Sah Diisi</div>
+            <div class="text-xs text-slate-500 font-medium">Laporan HEM Selesai</div>
           </div>
         </div>
       </div>
@@ -160,8 +170,8 @@
       <!-- Jadual Status Guru Mentor -->
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="p-5 border-b border-slate-200 flex justify-between items-center">
-          <h3 class="font-bold text-slate-800 text-sm">Status Laporan Mentor (Disahkan di Google Sheet)</h3>
-          <span class="text-xs text-slate-500">Maksimum 8 Siri per Murid</span>
+          <h3 class="font-bold text-slate-800 text-sm">Status Laporan Mengikut Guru Mentor</h3>
+          <span class="text-xs text-slate-500">Kemas kini langsung Google Sheet</span>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left text-sm">
@@ -179,14 +189,12 @@
         </div>
       </div>
 
-      <!-- Senarai Rekod Laporan Terkini -->
+      <!-- Senarai Laporan Terkini Berserta Pautan Rasmi OPR -->
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
         <h3 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
-          <i data-lucide="history" class="w-4 h-4 text-indigo-600"></i> Rekod Pengisian Terkini (opr.semekar.com)
+          <i data-lucide="link" class="w-4 h-4 text-indigo-600"></i> Rekod & Pautan Laporan OPR yang Telah Diisi
         </h3>
-        <div id="recentReportsContainer" class="space-y-2 text-xs">
-          <!-- Render senarai laporan -->
-        </div>
+        <div id="recentReportsContainer" class="space-y-2 text-xs"></div>
       </div>
     </section>
 
@@ -213,9 +221,8 @@
         </button>
       </div>
 
-      <!-- Templat Cetakan Rasmi One Page Report (OPR) HEM SEMEKAR -->
+      <!-- Templat Format Cetakan Rasmi One Page Report (OPR) HEM SEMEKAR -->
       <div id="printArea" class="bg-white p-8 md:p-12 rounded-2xl shadow-md border border-slate-300 max-w-4xl mx-auto text-slate-900">
-        <!-- Kepala Surat Rasmi Bersama Logo Sekolah (logo.png) -->
         <div class="border-b-2 border-slate-800 pb-4 mb-5 flex items-center justify-between gap-4">
           <img src="logo.png" alt="Logo SEMEKAR" class="w-20 h-20 object-contain" onerror="this.onerror=null; this.src='https://placehold.co/100x100?text=SEMEKAR'">
           <div class="flex-1 text-center">
@@ -238,11 +245,11 @@
           <div>
             <p><span class="font-bold text-slate-600">SESI PERTEMUAN:</span> <span id="opr-sesi" class="font-bold text-blue-700">Pertemuan 1</span></p>
             <p class="mt-1"><span class="font-bold text-slate-600">SUMBER PENGISIAN:</span> <span class="font-semibold text-slate-800">opr.semekar.com (Unit HEM)</span></p>
-            <p class="mt-1"><span class="font-bold text-slate-600">PAUTAN/RUJUKAN OPR:</span> <span id="opr-url-link" class="font-mono text-blue-600">Telah direkod</span></p>
+            <p class="mt-1"><span class="font-bold text-slate-600">PAUTAN REKOD OPR:</span> <a id="opr-url-link" href="#" target="_blank" class="font-mono text-blue-600 underline">Telah disahkan dalam sistem</a></p>
           </div>
         </div>
 
-        <!-- Dua Gambar OPR: Gambar Murid & Gambar Aktiviti Pertemuan -->
+        <!-- Dua Petak Gambar -->
         <div class="grid grid-cols-2 gap-4 mb-5">
           <div class="border border-slate-300 rounded-xl p-2 text-center bg-slate-50">
             <p class="text-[10px] font-bold text-slate-500 mb-2 uppercase">Profil Mentee</p>
@@ -264,7 +271,7 @@
           </div>
         </div>
 
-        <!-- Fokus & Refleksi -->
+        <!-- Fokus & Catatan -->
         <div class="space-y-3 text-xs mb-8">
           <div class="border border-slate-300 p-3 rounded-lg">
             <h4 class="font-bold text-slate-800 uppercase mb-1">1. Fokus & Isu Perbincangan:</h4>
@@ -281,7 +288,7 @@
           </div>
         </div>
 
-        <!-- Ruang Pengesahan & Tandatangan -->
+        <!-- Ruang Pengesahan -->
         <div class="grid grid-cols-2 gap-12 text-xs pt-8 border-t border-slate-300">
           <div>
             <p class="font-bold">Disediakan Oleh:</p>
@@ -301,79 +308,7 @@
 
   </main>
 
-  <!-- ================= MODAL 1: BORANG PENGESAHAN LAPORAN OPR HEM ================= -->
-  <div id="oprModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200">
-      <div class="flex justify-between items-center mb-3">
-        <h3 class="font-bold text-base text-slate-800 flex items-center gap-2">
-          <i data-lucide="clipboard-check" class="w-5 h-5 text-blue-600"></i> Pengisian Laporan OPR HEM
-        </h3>
-        <button onclick="closeOprModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-
-      <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs mb-4">
-        <p><strong class="text-slate-700">Mentee:</strong> <span id="modalOprMenteeNama" class="text-slate-900 font-bold">-</span></p>
-        <p class="mt-1"><strong class="text-slate-700">Guru Mentor:</strong> <span id="modalOprMentorNama">-</span> | <span id="modalOprKelas" class="font-semibold text-blue-700">-</span></p>
-      </div>
-
-      <!-- Langkah 1: Buka Portal Rasmi -->
-      <div class="p-3.5 bg-blue-50/80 rounded-xl border border-blue-200 mb-4">
-        <div class="flex items-start justify-between gap-3">
-          <div>
-            <h4 class="text-xs font-bold text-blue-900">Langkah 1: Isi Laporan di opr.semekar.com</h4>
-            <p class="text-[11px] text-blue-700 mt-0.5">Buka portal rasmi OPR SEMEKAR di tab baharu untuk mengisi laporan di bawah Unit HEM.</p>
-          </div>
-          <button onclick="bukaPortalOprLangsung()" class="shrink-0 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-2 rounded-lg flex items-center gap-1.5 shadow-sm transition">
-            <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Buka Portal OPR
-          </button>
-        </div>
-      </div>
-
-      <!-- Langkah 2: Rekodkan Pengisian ke Google Sheet -->
-      <form id="oprRecordForm" onsubmit="hantarPengesahanLaporan(event)" class="space-y-3 text-xs">
-        <h4 class="font-bold text-slate-800">Langkah 2: Rekodkan Laporan yang Telah Diisi</h4>
-        
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block font-semibold text-slate-600 mb-1">Sesi Pertemuan:</label>
-            <select id="modalOprSesi" required class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg">
-              <option value="1">Pertemuan 1</option>
-              <option value="2">Pertemuan 2</option>
-              <option value="3">Pertemuan 3</option>
-              <option value="4">Pertemuan 4</option>
-              <option value="5">Pertemuan 5</option>
-              <option value="6">Pertemuan 6</option>
-              <option value="7">Pertemuan 7</option>
-              <option value="8">Pertemuan 8 (Pecutan SPM)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block font-semibold text-slate-600 mb-1">Tarikh Pertemuan:</label>
-            <input type="date" id="modalOprTarikh" required class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg">
-          </div>
-        </div>
-
-        <div>
-          <label class="block font-semibold text-slate-600 mb-1">Pautan URL / No. Rujukan Laporan (dari opr.semekar.com):</label>
-          <input type="text" id="modalOprUrl" placeholder="Cth: https://opr.semekar.com/view/123 atau No. Rujukan HEM" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg">
-        </div>
-
-        <div>
-          <label class="block font-semibold text-slate-600 mb-1">Catatan Ringkas / Refleksi Pertemuan:</label>
-          <textarea id="modalOprRefleksi" rows="2" placeholder="Cth: Murid diberikan bimbingan modul berfokus dan motivasi kehadiran..." class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg"></textarea>
-        </div>
-
-        <div class="flex gap-2 pt-2">
-          <button type="submit" id="btnSubmitOpr" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl text-xs transition flex justify-center items-center gap-1.5 shadow-sm">
-            <i data-lucide="check" class="w-4 h-4"></i> Simpan Rekod Pengisian (Google Sheet)
-          </button>
-          <button type="button" onclick="closeOprModal()" class="px-4 py-2.5 border border-slate-300 text-slate-600 rounded-xl text-xs">Batal</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ================= MODAL 2: MUAT NAIK GAMBAR MENTEE ================= -->
+  <!-- Modal Kemaskini Gambar Mentee -->
   <div id="imageModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
       <div class="flex justify-between items-center mb-4">
@@ -411,63 +346,177 @@
     </div>
   </div>
 
-  <!-- SCRIPT APLIKASI -->
+  <!-- SCRIPT LOGIK & INTEGRASI AUTOMATIK -->
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxlSiiVIh9_j2FmrztwnmmUCGwNxWVuDKlLn3H0ZyFJh8M5I3LFgw0lrXqkcZilJPuUaw/exec";
     const SHEET_ID = "1P7f5ljO2qaqiYkdKDHJupaEu9SymfqEV8veYXeHSZVQ";
 
-    // Data Awal 40 Calon Mentee SEMEKAR
+    // 40 Calon Mentee SEMEKAR
     let menteesData = [
-      { bil: 1, nama: "AFIF HAFIY BIN MOHD AFIQ", kelas: "5S1", mentor: "NORHAYATI BT MD. ZAIN", photoUrl: "", reports: 0 },
-      { bil: 2, nama: "CHENG ZHI XUEN", kelas: "5S1", mentor: "MOHAMAAD FADZELI BIN AZAM", photoUrl: "", reports: 0 },
-      { bil: 3, nama: "HONG ZI XIN", kelas: "5S1", mentor: "ZAINAL B MOHD ZABIR", photoUrl: "", reports: 0 },
-      { bil: 4, nama: "JENNISER YOW YI EN", kelas: "5S1", mentor: "ZAIMAH BINTI SAMAD", photoUrl: "", reports: 0 },
-      { bil: 5, nama: "JONATHAN TAN HAO YUAN", kelas: "5S1", mentor: "MASNON BIN AMAT", photoUrl: "", reports: 0 },
-      { bil: 6, nama: "LIM QI SHENG", kelas: "5S1", mentor: "TAN BEE KEAN", photoUrl: "", reports: 0 },
-      { bil: 7, nama: "MARCUS EE PIAO XUAN", kelas: "5S1", mentor: "NURUL HAMIZAH BINTI MD SAID", photoUrl: "", reports: 0 },
-      { bil: 8, nama: "NUR ALIESYA TAN BINTI ABDULLAH", kelas: "5S1", mentor: "NUR AINA NAJWA BINTI MOHD NOR", photoUrl: "", reports: 0 },
-      { bil: 9, nama: "NUR SYAAFIAH SABRINA BINTI ABDULLAH", kelas: "5S1", mentor: "NURUL HAMIZAH BINTI MD SAID", photoUrl: "", reports: 0 },
-      { bil: 10, nama: "ABBY ALKASHA BINTI ANUAR", kelas: "5S2", mentor: "NORHAYATI BT MD. ZAIN", photoUrl: "", reports: 0 },
-      { bil: 11, nama: "ADAM RAYYAN BIN KHAIRUL ANUAR", kelas: "5S2", mentor: "ABD HADI B ADMAN (PENGETUA)", photoUrl: "", reports: 0 },
-      { bil: 12, nama: "AMMAR SHAKIR BIN MAZLAN", kelas: "5S2", mentor: "MOHD RIDUWAN BIN MOHD YASAN", photoUrl: "", reports: 0 },
-      { bil: 13, nama: "HARINI A/P VADIVELAN", kelas: "5S2", mentor: "TAMILVANI A/P KRISHNAN", photoUrl: "", reports: 0 },
-      { bil: 14, nama: "JUNO WONG JUN LE", kelas: "5S2", mentor: "NORUL HAFIDZAH BINTI HASSAN", photoUrl: "", reports: 0 },
-      { bil: 15, nama: "KHADIJAH BINTI SALIHEN", kelas: "5S2", mentor: "NUR AINA NAJWA BINTI MOHD NOR", photoUrl: "", reports: 0 },
-      { bil: 16, nama: "MUHAMAD AFIQ BIN NORAZLI", kelas: "5S2", mentor: "NUR FATIN NAZIRAH BINTI RASHIDI", photoUrl: "", reports: 0 },
-      { bil: 17, nama: "MUHAMMAD AZIQ THAQIF BIN MOHD ISA", kelas: "5S2", mentor: "ABD HADI B ADMAN (PENGETUA)", photoUrl: "", reports: 0 },
-      { bil: 18, nama: "MUHAMMAD DANIAL ARASH BIN SARKAN", kelas: "5S2", mentor: "OSKASMAZILA BINTI OSMAN", photoUrl: "", reports: 0 },
-      { bil: 19, nama: "MUHAMMAD MU'IZ BIN RAZALI", kelas: "5S2", mentor: "MUHAMMAD AMIRUL AIMAN BIN ZAKARIA", photoUrl: "", reports: 0 },
-      { bil: 20, nama: "NUR FARAH ALYSAH BINTI ZULKEFPLAI", kelas: "5S2", mentor: "NORIHAN BINTI YUSOF", photoUrl: "", reports: 0 },
-      { bil: 21, nama: "NUR FATIHA BINTI KAHAR", kelas: "5S2", mentor: "MOHD NIZAM BIN SUBANI", photoUrl: "", reports: 0 },
-      { bil: 22, nama: "NURFAHANA BINTI MOHD YUSUF", kelas: "5S2", mentor: "NORIHAN BINTI YUSOF", photoUrl: "", reports: 0 },
-      { bil: 23, nama: "PUTERA AZHAD BIN MOHD ROUB", kelas: "5S2", mentor: "MUHAMMAD SYADZA BIN YUSOF", photoUrl: "", reports: 0 },
-      { bil: 24, nama: "PUTERI ILEEYA MAISARA BINTI ISMAIL", kelas: "5S2", mentor: "TANTY BTE RAMLI", photoUrl: "", reports: 0 },
-      { bil: 25, nama: "PUTERI NATASYA ALYAA BINTI ZAIDI", kelas: "5S2", mentor: "TANTY BTE RAMLI", photoUrl: "", reports: 0 },
-      { bil: 26, nama: "PUTERI QALEESYA ARYANA BINTI BAHRIN", kelas: "5S2", mentor: "NUR FATIN NAZIRAH BINTI RASHIDI", photoUrl: "", reports: 0 },
-      { bil: 27, nama: "SURENTARN A/L K NARAYANAN", kelas: "5S2", mentor: "NORFAIZAH BINTI ISMAIL", photoUrl: "", reports: 0 },
-      { bil: 28, nama: "TAN TAI FENG", kelas: "5S2", mentor: "JESSICA CHAN LAI PENG", photoUrl: "", reports: 0 },
-      { bil: 29, nama: "GOH YU ZHE", kelas: "5S3", mentor: "TAN BEE KEAN", photoUrl: "", reports: 0 },
-      { bil: 30, nama: "MUHAMMAD ALIF SAFWAN BIN ABDULLAH", kelas: "5S3", mentor: "ROHANA BINTI JASMIN", photoUrl: "", reports: 0 },
-      { bil: 31, nama: "MUHAMMAD ASFA RAZAN BIN MOHD GHARIB", kelas: "5S3", mentor: "SITI NUR HAKIMAH BINTI MOHD NOOR", photoUrl: "", reports: 0 },
-      { bil: 32, nama: "MUHAMMAD DANIEL SHAH BIN HASZELLI", kelas: "5S3", mentor: "NORHAMIZAH BINTI SHAFIE", photoUrl: "", reports: 0 },
-      { bil: 33, nama: "MUHAMMAD IRFAN BIN ABDUL JABAR ALI", kelas: "5S3", mentor: "MOHD RIDUWAN BIN MOHD YASAN", photoUrl: "", reports: 0 },
-      { bil: 34, nama: "MUHAMMAD NAZRAN BIN HASBULLAH", kelas: "5S3", mentor: "MUHAMMAD AMIRUL AIMAN BIN ZAKARIA", photoUrl: "", reports: 0 },
-      { bil: 35, nama: "MUHAMMAD RAYYAN BIN HEDLY", kelas: "5S3", mentor: "NORFAIZAH BINTI ISMAIL", photoUrl: "", reports: 0 },
-      { bil: 36, nama: "NUR AIN ADLINA BINTI ABDUL RAHMAN", kelas: "5S3", mentor: "ROHANA BINTI JASMIN", photoUrl: "", reports: 0 },
-      { bil: 37, nama: "NUR QASEH BINTI RAZIM", kelas: "5S3", mentor: "LAVANYA A/P VEJAYAN", photoUrl: "", reports: 0 },
-      { bil: 38, nama: "SITINORMASHIDATUL BINTI MOHD ROZI", kelas: "5S3", mentor: "SITI HANIZA BINTI IMRAN", photoUrl: "", reports: 0 },
-      { bil: 39, nama: "TEO KAH ZHENG", kelas: "5S3", mentor: "PENYELARAS TINGKATAN 5", photoUrl: "", reports: 0 },
-      { bil: 40, nama: "TEY MING FONG", kelas: "5S3", mentor: "MUHAMMAD SYADZA BIN YUSOF", photoUrl: "", reports: 0 }
+      { bil: 1, nama: "AFIF HAFIY BIN MOHD AFIQ", kelas: "5S1", mentor: "NORHAYATI BT MD. ZAIN", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 2, nama: "CHENG ZHI XUEN", kelas: "5S1", mentor: "MOHAMAAD FADZELI BIN AZAM", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 3, nama: "HONG ZI XIN", kelas: "5S1", mentor: "ZAINAL B MOHD ZABIR", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 4, nama: "JENNISER YOW YI EN", kelas: "5S1", mentor: "ZAIMAH BINTI SAMAD", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 5, nama: "JONATHAN TAN HAO YUAN", kelas: "5S1", mentor: "MASNON BIN AMAT", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 6, nama: "LIM QI SHENG", kelas: "5S1", mentor: "TAN BEE KEAN", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 7, nama: "MARCUS EE PIAO XUAN", kelas: "5S1", mentor: "NURUL HAMIZAH BINTI MD SAID", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 8, nama: "NUR ALIESYA TAN BINTI ABDULLAH", kelas: "5S1", mentor: "NUR AINA NAJWA BINTI MOHD NOR", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 9, nama: "NUR SYAAFIAH SABRINA BINTI ABDULLAH", kelas: "5S1", mentor: "NURUL HAMIZAH BINTI MD SAID", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 10, nama: "ABBY ALKASHA BINTI ANUAR", kelas: "5S2", mentor: "NORHAYATI BT MD. ZAIN", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 11, nama: "ADAM RAYYAN BIN KHAIRUL ANUAR", kelas: "5S2", mentor: "ABD HADI B ADMAN (PENGETUA)", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 12, nama: "AMMAR SHAKIR BIN MAZLAN", kelas: "5S2", mentor: "MOHD RIDUWAN BIN MOHD YASAN", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 13, nama: "HARINI A/P VADIVELAN", kelas: "5S2", mentor: "TAMILVANI A/P KRISHNAN", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 14, nama: "JUNO WONG JUN LE", kelas: "5S2", mentor: "NORUL HAFIDZAH BINTI HASSAN", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 15, nama: "KHADIJAH BINTI SALIHEN", kelas: "5S2", mentor: "NUR AINA NAJWA BINTI MOHD NOR", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 16, nama: "MUHAMAD AFIQ BIN NORAZLI", kelas: "5S2", mentor: "NUR FATIN NAZIRAH BINTI RASHIDI", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 17, nama: "MUHAMMAD AZIQ THAQIF BIN MOHD ISA", kelas: "5S2", mentor: "ABD HADI B ADMAN (PENGETUA)", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 18, nama: "MUHAMMAD DANIAL ARASH BIN SARKAN", kelas: "5S2", mentor: "OSKASMAZILA BINTI OSMAN", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 19, nama: "MUHAMMAD MU'IZ BIN RAZALI", kelas: "5S2", mentor: "MUHAMMAD AMIRUL AIMAN BIN ZAKARIA", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 20, nama: "NUR FARAH ALYSAH BINTI ZULKEFPLAI", kelas: "5S2", mentor: "NORIHAN BINTI YUSOF", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 21, nama: "NUR FATIHA BINTI KAHAR", kelas: "5S2", mentor: "MOHD NIZAM BIN SUBANI", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 22, nama: "NURFAHANA BINTI MOHD YUSUF", kelas: "5S2", mentor: "NORIHAN BINTI YUSOF", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 23, nama: "PUTERA AZHAD BIN MOHD ROUB", kelas: "5S2", mentor: "MUHAMMAD SYADZA BIN YUSOF", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 24, nama: "PUTERI ILEEYA MAISARA BINTI ISMAIL", kelas: "5S2", mentor: "TANTY BTE RAMLI", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 25, nama: "PUTERI NATASYA ALYAA BINTI ZAIDI", kelas: "5S2", mentor: "TANTY BTE RAMLI", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 26, nama: "PUTERI QALEESYA ARYANA BINTI BAHRIN", kelas: "5S2", mentor: "NUR FATIN NAZIRAH BINTI RASHIDI", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 27, nama: "SURENTARN A/L K NARAYANAN", kelas: "5S2", mentor: "NORFAIZAH BINTI ISMAIL", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 28, nama: "TAN TAI FENG", kelas: "5S2", mentor: "JESSICA CHAN LAI PENG", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 29, nama: "GOH YU ZHE", kelas: "5S3", mentor: "TAN BEE KEAN", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 30, nama: "MUHAMMAD ALIF SAFWAN BIN ABDULLAH", kelas: "5S3", mentor: "ROHANA BINTI JASMIN", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 31, nama: "MUHAMMAD ASFA RAZAN BIN MOHD GHARIB", kelas: "5S3", mentor: "SITI NUR HAKIMAH BINTI MOHD NOOR", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 32, nama: "MUHAMMAD DANIEL SHAH BIN HASZELLI", kelas: "5S3", mentor: "NORHAMIZAH BINTI SHAFIE", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 33, nama: "MUHAMMAD IRFAN BIN ABDUL JABAR ALI", kelas: "5S3", mentor: "MOHD RIDUWAN BIN MOHD YASAN", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 34, nama: "MUHAMMAD NAZRAN BIN HASBULLAH", kelas: "5S3", mentor: "MUHAMMAD AMIRUL AIMAN BIN ZAKARIA", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 35, nama: "MUHAMMAD RAYYAN BIN HEDLY", kelas: "5S3", mentor: "NORFAIZAH BINTI ISMAIL", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 36, nama: "NUR AIN ADLINA BINTI ABDUL RAHMAN", kelas: "5S3", mentor: "ROHANA BINTI JASMIN", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 37, nama: "NUR QASEH BINTI RAZIM", kelas: "5S3", mentor: "LAVANYA A/P VEJAYAN", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 38, nama: "SITINORMASHIDATUL BINTI MOHD ROZI", kelas: "5S3", mentor: "SITI HANIZA BINTI IMRAN", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 39, nama: "TEO KAH ZHENG", kelas: "5S3", mentor: "PENYELARAS TINGKATAN 5", photoUrl: "", reports: 0, latestOprLink: "" },
+      { bil: 40, nama: "TEY MING FONG", kelas: "5S3", mentor: "MUHAMMAD SYADZA BIN YUSOF", photoUrl: "", reports: 0, latestOprLink: "" }
     ];
 
     let laporanList = JSON.parse(localStorage.getItem('semekar_laporan_list') || '[]');
-    let currentOprMentee = null;
     let activeMenteeForModal = null;
 
-    // Muat Data dari Google Sheets
+    // 1. PENGESAN BALIK AUTOMATIK (CALLBACK LISTENER)
+    async function semakCallbackOpr() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const status = urlParams.get('status');
+      const bil = parseInt(urlParams.get('bil'));
+      const oprLink = urlParams.get('link') || urlParams.get('opr_link') || 'https://opr.semekar.com';
+
+      if (status === 'selesai' && bil) {
+        const mentee = menteesData.find(m => m.bil === bil);
+        if (mentee) {
+          const sesiBaharu = Math.min(8, (mentee.reports || 0) + 1);
+          mentee.reports = sesiBaharu;
+          mentee.latestOprLink = oprLink;
+
+          // Catat ke senarai laporan tempatan
+          const newRecord = {
+            bil: bil,
+            nama: mentee.nama,
+            mentor: mentee.mentor,
+            kelas: mentee.kelas,
+            sesi: sesiBaharu,
+            oprUrl: oprLink,
+            tarikh: new Date().toISOString().split('T')[0],
+            waktu: new Date().toLocaleTimeString('ms-MY')
+          };
+          laporanList.unshift(newRecord);
+          localStorage.setItem('semekar_laporan_list', JSON.stringify(laporanList));
+          localStorage.setItem('semekar_mentees_cache', JSON.stringify(menteesData));
+
+          // Simpan secara automatik ke Google Sheet (Mentee & Laporan_OPR)
+          try {
+            await fetch(SCRIPT_URL, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action: 'simpanLaporanOprAutomatik',
+                bil: bil,
+                nama: mentee.nama,
+                mentor: mentee.mentor,
+                kelas: mentee.kelas,
+                sesi: sesiBaharu,
+                oprUrl: oprLink
+              })
+            });
+          } catch (e) {
+            console.error("Gagal menyimpan ke Sheet:", e);
+          }
+
+          // Tunjuk popup kejayaan
+          tunjukToast(`Pertemuan ${sesiBaharu} bagi ${mentee.nama} disahkan secara automatik!`);
+
+          // Bersihkan URL tanpa reload
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      }
+    }
+
+    // 2. MENDENGAR MESEJ POSTMESSAGE JIKA OPR DIBUKA MELALUI POPUP
+    window.addEventListener('message', async (event) => {
+      if (event.data && event.data.type === 'OPR_SELESAI') {
+        const { bil, link } = event.data;
+        const mentee = menteesData.find(m => m.bil === parseInt(bil));
+        if (mentee) {
+          const sesiBaharu = Math.min(8, (mentee.reports || 0) + 1);
+          mentee.reports = sesiBaharu;
+          mentee.latestOprLink = link;
+
+          renderMentees();
+          updateDashboardStats();
+          tunjukToast(`Laporan OPR diterima! 1 pertemuan ditambah untuk ${mentee.nama}.`);
+        }
+      }
+    });
+
+    // 3. BUTANG KLIK ISI LAPORAN KE opr.semekar.com (UNIT HEM AUTO)
+    function pergiKeOprHem(bil) {
+      const mentee = menteesData.find(m => m.bil === bil);
+      if (!mentee) return;
+
+      // Dapatkan URL asal web mentor mentee ini untuk callback
+      const returnUrl = window.location.origin + window.location.pathname;
+      const sesiSeterusnya = Math.min(8, (mentee.reports || 0) + 1);
+
+      // BINA URL LENGKAP KE opr.semekar.com BERSAMA PARAMETER UNIT HEM
+      const params = new URLSearchParams({
+        unit: 'HEM',                                   // Automatik Unit HEM
+        aktiviti: `Program Mentor Mentee SPM (Siri ${sesiSeterusnya})`,
+        nama_pelapor: mentee.mentor,
+        mentee: mentee.nama,
+        kelas: mentee.kelas,
+        bil: mentee.bil,
+        sesi: sesiSeterusnya,
+        return_url: returnUrl                          // Pautan untuk kembali semula ke sini
+      });
+
+      const urlOpr = `https://opr.semekar.com/?${params.toString()}`;
+
+      // Simpan rujukan sesi aktif
+      sessionStorage.setItem('pending_mentee_bil', mentee.bil);
+      sessionStorage.setItem('pending_mentee_sesi', sesiSeterusnya);
+
+      // Buka borang di opr.semekar.com
+      window.location.href = urlOpr;
+    }
+
+    // Paparan Toast
+    function tunjukToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.remove('translate-y-[-100px]', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-[-100px]', 'opacity-0');
+      }, 5000);
+    }
+
+    // Ambil Data dari Google Sheets
     async function fetchDataFromSheet() {
       const loadingEl = document.getElementById('loadingStatus');
-      const syncEl = document.getElementById('syncIndicator');
       loadingEl.classList.remove('hidden');
 
       try {
@@ -481,19 +530,17 @@
               kelas: item.KELAS || item.kelas || "",
               mentor: item["NAMA GURU (MENTOR)"] || item.mentor || "-",
               photoUrl: item.GAMBAR_URL || item.photoUrl || "",
-              reports: parseInt(item.JUMLAH_PERTEMUAN || item.reports || 0)
+              reports: parseInt(item.JUMLAH_PERTEMUAN || item.reports || 0),
+              latestOprLink: item.LATEST_OPR_LINK || ""
             }));
-            syncEl.className = "inline-block w-2.5 h-2.5 rounded-full bg-emerald-400";
-            syncEl.title = "Bersambung terus ke Google Sheet";
           }
         }
       } catch (err) {
-        console.warn("Menggunakan storan setempat:", err);
         const cached = localStorage.getItem('semekar_mentees_cache');
         if (cached) menteesData = JSON.parse(cached);
       } finally {
         loadingEl.classList.add('hidden');
-        localStorage.setItem('semekar_mentees_cache', JSON.stringify(menteesData));
+        await semakCallbackOpr();
         populateMentorFilter();
         renderMentees();
         populateReportMenteeDropdown();
@@ -503,7 +550,6 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
-      document.getElementById('modalOprTarikh').valueAsDate = new Date();
       fetchDataFromSheet();
     });
 
@@ -565,7 +611,7 @@
           <div>
             <div class="flex items-center gap-4 mb-4">
               <!-- Foto Mentee -->
-              <div class="relative group cursor-pointer" onclick="openImageModal(${m.bil}, '${m.nama.replace(/'/g, "\\'")}')" title="Klik untuk kemaskini gambar">
+              <div class="relative group cursor-pointer" onclick="openImageModal(${m.bil}, '${m.nama.replace(/'/g, "\\'")}')" title="Klik untuk muat naik gambar">
                 <div class="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shadow-inner">
                   ${m.photoUrl 
                     ? `<img src="${m.photoUrl}" class="w-full h-full object-cover">` 
@@ -591,24 +637,36 @@
             </div>
 
             <!-- Kemajuan Pertemuan -->
-            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 mb-4">
+            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 mb-3">
               <div class="flex justify-between text-xs mb-1">
-                <span class="text-slate-500 font-medium">Laporan Sah Diisi:</span>
-                <span class="font-bold text-blue-700">${m.reports || 0}/8 Siri SPM</span>
+                <span class="text-slate-500 font-medium">Status Pertemuan SPM:</span>
+                <span class="font-bold text-blue-700">${m.reports || 0}/8 Selesai</span>
               </div>
               <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                 <div class="bg-blue-600 h-full rounded-full transition-all" style="width: ${Math.min(100, ((m.reports || 0)/8)*100)}%"></div>
               </div>
             </div>
+
+            <!-- Pautan Laporan OPR yang Telah Diisi (Jika Ada) -->
+            ${m.latestOprLink ? `
+              <div class="mb-3 px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between text-xs text-emerald-800">
+                <span class="truncate flex items-center gap-1.5 font-semibold">
+                  <i data-lucide="file-check" class="w-3.5 h-3.5 text-emerald-600"></i> OPR Sesi Terkini:
+                </span>
+                <a href="${m.latestOprLink}" target="_blank" class="text-blue-600 hover:underline font-bold shrink-0 ml-2 flex items-center gap-1">
+                  Buka OPR <i data-lucide="external-link" class="w-3 h-3"></i>
+                </a>
+              </div>
+            ` : ''}
           </div>
 
-          <!-- Butang Pengisian Laporan (Membuka Modal Pengurusan OPR) -->
+          <!-- BUTANG TERUS KE PENGISIAN OPR HEM DI opr.semekar.com -->
           <div class="pt-2 border-t border-slate-100 flex items-center gap-2">
-            <button onclick="bukaModalOpr(${m.bil})" 
+            <button onclick="pergiKeOprHem(${m.bil})" 
               class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm transition">
-              <i data-lucide="file-edit" class="w-3.5 h-3.5"></i> Isi Laporan OPR HEM
+              <i data-lucide="file-edit" class="w-3.5 h-3.5"></i> Isi Laporan OPR (Unit HEM)
             </button>
-            <button onclick="paparLaporanMentee(${m.bil})" title="Cetak Laporan Mentee Ini" class="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl border border-slate-200 transition">
+            <button onclick="paparLaporanMentee(${m.bil})" title="Cetak Laporan Mentee" class="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl border border-slate-200 transition">
               <i data-lucide="printer" class="w-4 h-4"></i>
             </button>
           </div>
@@ -618,111 +676,12 @@
       lucide.createIcons();
     }
 
-    // ================= PENGENDALIAN LAPORAN OPR =================
-    function bukaModalOpr(bil) {
-      const mentee = menteesData.find(m => m.bil === bil);
-      if (!mentee) return;
-      currentOprMentee = mentee;
-
-      document.getElementById('modalOprMenteeNama').textContent = `#${mentee.bil} - ${mentee.nama}`;
-      document.getElementById('modalOprMentorNama').textContent = mentee.mentor;
-      document.getElementById('modalOprKelas').textContent = mentee.kelas;
-      
-      // Cadang nombor sesi seterusnya
-      const nextSession = Math.min(8, (mentee.reports || 0) + 1);
-      document.getElementById('modalOprSesi').value = nextSession;
-      document.getElementById('modalOprUrl').value = "";
-      document.getElementById('modalOprRefleksi').value = "";
-
-      document.getElementById('oprModal').classList.remove('hidden');
-      lucide.createIcons();
-    }
-
-    function closeOprModal() {
-      document.getElementById('oprModal').classList.add('hidden');
-      currentOprMentee = null;
-    }
-
-    // Butang Membuka Portal opr.semekar.com (Domain Rasmi Tanpa Ralat 404)
-    function bukaPortalOprLangsung() {
-      window.open('https://opr.semekar.com', '_blank');
-    }
-
-    // Simpan Rekod Laporan Selepas Diisi di opr.semekar.com
-    async function hantarPengesahanLaporan(e) {
-      e.preventDefault();
-      if (!currentOprMentee) return;
-
-      const bil = currentOprMentee.bil;
-      const sesi = document.getElementById('modalOprSesi').value;
-      const tarikh = document.getElementById('modalOprTarikh').value;
-      const oprUrl = document.getElementById('modalOprUrl').value.trim() || 'https://opr.semekar.com';
-      const refleksi = document.getElementById('modalOprRefleksi').value.trim() || 'Laporan program mentor mentee telah diisi di portal rasmi opr.semekar.com (Unit HEM).';
-
-      const btn = document.getElementById('btnSubmitOpr');
-      btn.disabled = true;
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Menyimpan ke Sheet...`;
-
-      // Simpan rekod tempatan
-      const newRecord = {
-        bil: bil,
-        nama: currentOprMentee.nama,
-        mentor: currentOprMentee.mentor,
-        kelas: currentOprMentee.kelas,
-        sesi: sesi,
-        tarikh: tarikh,
-        oprUrl: oprUrl,
-        refleksi: refleksi,
-        waktu: new Date().toLocaleString('ms-MY')
-      };
-      laporanList.unshift(newRecord);
-      localStorage.setItem('semekar_laporan_list', JSON.stringify(laporanList));
-
-      // Kemaskini bilangan sesi mentee
-      const mentee = menteesData.find(m => m.bil === bil);
-      if (mentee) {
-        if (!mentee.reports || mentee.reports < sesi) {
-          mentee.reports = parseInt(sesi);
-        }
-      }
-      localStorage.setItem('semekar_mentees_cache', JSON.stringify(menteesData));
-
-      // Hantar Data ke Google Apps Script (Helaian 'Laporan_OPR' & 'Mentee')
-      try {
-        await fetch(SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            action: 'simpanLaporan',
-            bil: bil,
-            nama: currentOprMentee.nama,
-            mentor: currentOprMentee.mentor,
-            kelas: currentOprMentee.kelas,
-            sesi: sesi,
-            oprUrl: oprUrl,
-            refleksi: refleksi,
-            tarikh: tarikh
-          })
-        });
-      } catch (err) {
-        console.error("Ralat simpan ke Apps Script:", err);
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> Simpan Rekod Pengisian (Google Sheet)`;
-        closeOprModal();
-        renderMentees();
-        updateDashboardStats();
-        alert(`Rekod Pertemuan Sesi ${sesi} bagi ${currentOprMentee.nama} berjaya direkodkan!`);
-      }
-    }
-
     function paparLaporanMentee(bil) {
       document.getElementById('reportMenteeSelect').value = bil;
       switchTab('laporan');
     }
 
-    // ================= PENGENDALIAN GAMBAR MENTEE =================
+    // Modal Gambar Mentee
     function openImageModal(bil, nama) {
       activeMenteeForModal = bil;
       const mentee = menteesData.find(m => m.bil === bil);
@@ -794,7 +753,7 @@
       }
     }
 
-    // ================= DASHBOARD & ANALITIK =================
+    // Dashboard & Graf
     let classChartInstance = null;
     let sessionChartInstance = null;
 
@@ -832,22 +791,22 @@
         tbody.appendChild(tr);
       }
 
-      // Senarai Rekod Terkini
+      // Senarai Pautan Rekod Laporan OPR
       const recentContainer = document.getElementById('recentReportsContainer');
       if (recentContainer) {
         if (laporanList.length === 0) {
-          recentContainer.innerHTML = `<div class="text-slate-400 py-3">Belum ada rekod laporan disimpan. Tekan 'Isi Laporan OPR HEM' pada senarai mentee untuk memulakan.</div>`;
+          recentContainer.innerHTML = `<div class="text-slate-400 py-3">Belum ada rekod laporan. Tekan 'Isi Laporan OPR' pada senarai mentee untuk memulakan pengisian di opr.semekar.com.</div>`;
         } else {
-          recentContainer.innerHTML = laporanList.slice(0, 5).map(r => `
-            <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+          recentContainer.innerHTML = laporanList.slice(0, 8).map(r => `
+            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200">
               <div>
                 <span class="font-bold text-slate-800">${r.nama}</span> (${r.kelas}) • <span class="text-blue-600 font-semibold">Sesi ${r.sesi}</span>
-                <p class="text-[11px] text-slate-500 mt-0.5">${r.refleksi}</p>
+                <p class="text-[11px] text-slate-500 mt-0.5">Mentor: ${r.mentor}</p>
               </div>
               <div class="text-right">
                 <span class="text-[10px] text-slate-400 block">${r.waktu || r.tarikh}</span>
-                <a href="${r.oprUrl}" target="_blank" class="text-blue-600 hover:underline font-semibold inline-flex items-center gap-1 mt-0.5">
-                  <i data-lucide="external-link" class="w-3 h-3"></i> OPR HEM
+                <a href="${r.oprUrl}" target="_blank" class="text-blue-600 hover:underline font-bold inline-flex items-center gap-1 mt-0.5">
+                  <i data-lucide="external-link" class="w-3 h-3"></i> Buka OPR
                 </a>
               </div>
             </div>
@@ -873,7 +832,7 @@
         data: {
           labels: ['Tingkatan 5S1', 'Tingkatan 5S2', 'Tingkatan 5S3'],
           datasets: [{
-            label: 'Laporan Sah Disimpan',
+            label: 'Laporan OPR Disahkan',
             data: classReports,
             backgroundColor: ['#3b82f6', '#6366f1', '#8b5cf6'],
             borderRadius: 8
@@ -908,7 +867,7 @@
       });
     }
 
-    // ================= CETAK LAPORAN OPR =================
+    // Halaman Cetakan OPR
     function populateReportMenteeDropdown() {
       const select = document.getElementById('reportMenteeSelect');
       select.innerHTML = '';
@@ -933,11 +892,16 @@
       document.getElementById('opr-sesi').textContent = `Pertemuan Ke-${sesi} (Menjelang SPM)`;
 
       const matchedRecord = laporanList.find(r => r.bil === bil && r.sesi == sesi);
-      if (matchedRecord) {
-        document.getElementById('opr-url-link').textContent = matchedRecord.oprUrl;
-        document.getElementById('opr-refleksi').textContent = matchedRecord.refleksi;
+      const oprLinkEl = document.getElementById('opr-url-link');
+      if (matchedRecord && matchedRecord.oprUrl) {
+        oprLinkEl.textContent = matchedRecord.oprUrl;
+        oprLinkEl.href = matchedRecord.oprUrl;
+      } else if (mentee.latestOprLink) {
+        oprLinkEl.textContent = mentee.latestOprLink;
+        oprLinkEl.href = mentee.latestOprLink;
       } else {
-        document.getElementById('opr-url-link').textContent = "opr.semekar.com (Unit HEM)";
+        oprLinkEl.textContent = "opr.semekar.com (Unit HEM)";
+        oprLinkEl.href = "https://opr.semekar.com";
       }
 
       const imgEl = document.getElementById('opr-img-mentee');
