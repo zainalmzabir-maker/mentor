@@ -33,26 +33,26 @@
         <div class="absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent animate-spin"></div>
         <i data-lucide="refresh-cw" class="w-6 h-6 text-blue-600"></i>
       </div>
-      <h3 id="loadingTitle" class="font-extrabold text-base text-slate-900 mb-1">Sedang Mengemaskini Data...</h3>
-      <p id="loadingDesc" class="text-xs text-slate-500 mb-4 leading-relaxed">Sila tunggu sebentar sementara sistem menyegerakkan data ke Google Sheets.</p>
+      <h3 id="loadingTitle" class="font-extrabold text-base text-slate-900 mb-1">Sedang Menyegerak Data...</h3>
+      <p id="loadingDesc" class="text-xs text-slate-500 mb-4 leading-relaxed">Sila tunggu sebentar sementara sistem memproses data anda.</p>
       <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
         <div class="bg-blue-600 h-full rounded-full animate-pulse w-full"></div>
       </div>
     </div>
   </div>
 
-  <!-- TOAST NOTIFIKASI KEJAYAAN -->
+  <!-- TOAST NOTIFIKASI -->
   <div id="toastNotification" class="fixed top-5 right-5 z-40 bg-emerald-600 text-white px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 transition-all duration-300 transform translate-y-[-100px] opacity-0 no-print">
     <div class="bg-white/20 p-2 rounded-xl">
       <i data-lucide="check-circle-2" class="w-6 h-6"></i>
     </div>
     <div>
-      <h4 class="font-bold text-sm">Berjaya Dikemaskini!</h4>
+      <h4 class="font-bold text-sm">Berjaya!</h4>
       <p id="toastMessage" class="text-xs text-emerald-100">Maklumat telah disegerak ke pangkalan data.</p>
     </div>
   </div>
 
-  <!-- HEADER DENGAN LOGO SEMEKAR -->
+  <!-- HEADER NAVIGASI -->
   <header class="bg-gradient-to-r from-blue-900 via-indigo-900 to-blue-950 text-white shadow-lg sticky top-0 z-30 no-print">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
       <div class="flex items-center space-x-3">
@@ -107,7 +107,7 @@
         <div class="w-full md:w-auto flex items-end">
           <button onclick="fetchDataFromSheet()" class="w-full md:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium px-4 py-2.5 rounded-xl border border-slate-300 flex items-center gap-2 transition">
             <i data-lucide="refresh-cw" class="w-4 h-4 text-blue-600"></i>
-            <span>Segerak Data Terkini</span>
+            <span>Segerak Data Sheet</span>
           </button>
         </div>
       </div>
@@ -199,7 +199,7 @@
         </div>
       </div>
 
-      <!-- Senarai Laporan Terkini Berserta Pautan Rasmi OPR -->
+      <!-- Senarai Laporan Terkini -->
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
         <h3 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
           <i data-lucide="link" class="w-4 h-4 text-indigo-600"></i> Rekod & Pautan Laporan OPR yang Telah Diisi
@@ -210,107 +210,170 @@
 
     <!-- ================= PAGE 3: CETAK LAPORAN OPR ================= -->
     <section id="page-laporan" class="space-y-6 hidden">
+      <!-- Toolbar Pemilihan Murid & Sesi -->
       <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 no-print">
         <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-          <label class="text-sm font-semibold text-slate-600 whitespace-nowrap">Pilih Murid Mentee:</label>
-          <select id="reportMenteeSelect" onchange="updateReportView()" class="w-full sm:w-80 p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-medium"></select>
-          <select id="reportSesiSelect" onchange="updateReportView()" class="w-full sm:w-48 p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-medium">
-            <option value="1">Pertemuan 1</option>
-            <option value="2">Pertemuan 2</option>
-            <option value="3">Pertemuan 3</option>
-            <option value="4">Pertemuan 4</option>
-            <option value="5">Pertemuan 5</option>
-            <option value="6">Pertemuan 6</option>
-            <option value="7">Pertemuan 7</option>
-            <option value="8">Pertemuan 8 (Pecutan SPM)</option>
-          </select>
+          <div class="w-full sm:w-auto">
+            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Pilih Murid Mentee:</label>
+            <select id="reportMenteeSelect" onchange="onMenteeSelectChange()" class="w-full sm:w-80 p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500"></select>
+          </div>
+          <div class="w-full sm:w-auto">
+            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Pilih Sesi Pertemuan:</label>
+            <select id="reportSesiSelect" onchange="updateReportView()" class="w-full sm:w-64 p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500"></select>
+          </div>
         </div>
 
-        <button onclick="window.print()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-sm transition">
-          <i data-lucide="printer" class="w-4 h-4"></i> Cetak / Simpan PDF (A4 OPR)
+        <div class="w-full md:w-auto flex items-end">
+          <button id="btnPrintReport" onclick="cetakLaporanOpr()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-sm transition">
+            <i data-lucide="printer" class="w-4 h-4"></i> Cetak / Simpan PDF (A4 OPR)
+          </button>
+        </div>
+      </div>
+
+      <!-- KEADAAN 1: TIADA LAPORAN (APABILA BELUM DIISI) -->
+      <div id="noReportState" class="hidden bg-white rounded-3xl p-10 md:p-14 shadow-sm border border-slate-200 text-center max-w-3xl mx-auto">
+        <div class="w-20 h-20 bg-rose-50 border border-rose-200 text-rose-500 rounded-3xl flex items-center justify-center mx-auto mb-5 shadow-sm">
+          <i data-lucide="file-question" class="w-10 h-10"></i>
+        </div>
+        <div class="inline-block px-3 py-1 bg-rose-100 text-rose-700 text-xs font-black rounded-lg uppercase tracking-wider mb-2">
+          STATUS: TIADA LAPORAN
+        </div>
+        <h3 class="text-xl font-black text-slate-800 mb-2">Laporan Belum Diisi Bagi Sesi Ini</h3>
+        <p class="text-sm text-slate-500 max-w-md mx-auto mb-6">
+          Laporan bimbingan bagi murid <strong id="noReportMenteeNama" class="text-slate-800">-</strong> (<span id="noReportKelas">-</span>) untuk <span id="noReportSesi" class="font-bold text-blue-700">Pertemuan</span> belum diisi oleh mentor.
+        </p>
+
+        <!-- Kad Maklumat Ringkas -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 max-w-md mx-auto text-xs text-left mb-6 space-y-2">
+          <div class="flex justify-between"><span class="text-slate-500">Guru Mentor:</span><span id="noReportMentor" class="font-bold text-slate-800">-</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Unit Terlibat:</span><span class="font-bold text-blue-700">Hal Ehwal Murid (HEM)</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Status Portal:</span><span class="font-bold text-rose-600">Belum Direkod di opr.semekar.com</span></div>
+        </div>
+
+        <button onclick="pergiKeOprDariLaporan()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 px-6 rounded-2xl text-xs flex items-center justify-center gap-2 mx-auto shadow-md hover:shadow-lg transition">
+          <i data-lucide="file-plus" class="w-4 h-4"></i> Isi Laporan Sekarang di opr.semekar.com (Unit HEM)
         </button>
       </div>
 
-      <!-- Templat Format Cetakan Rasmi One Page Report (OPR) HEM SEMEKAR -->
-      <div id="printArea" class="bg-white p-8 md:p-12 rounded-2xl shadow-md border border-slate-300 max-w-4xl mx-auto text-slate-900">
-        <div class="border-b-2 border-slate-800 pb-4 mb-5 flex items-center justify-between gap-4">
-          <img src="logo.png" alt="Logo SEMEKAR" class="w-20 h-20 object-contain" onerror="this.onerror=null; this.src='https://placehold.co/100x100?text=SEMEKAR'">
-          <div class="flex-1 text-center">
-            <h2 class="text-xl font-black tracking-wide uppercase">SMK KAMARUL ARIFFIN (SEMEKAR)</h2>
-            <p class="text-xs text-slate-600 font-semibold uppercase">PENGURUSAN HAL EHWAL MURID (HEM) • UNIT BIMBINGAN & KAUNSELING</p>
-            <div class="inline-block mt-2 px-3 py-1 bg-slate-900 text-white text-xs font-bold rounded tracking-wider uppercase">
-              ONE PAGE REPORT (OPR) - PROGRAM MENTOR MENTEE SPM
+      <!-- KEADAAN 2: LAPORAN TELAH ADA (TERUS PAPARKAN DOKUMEN LAPORAN SEBENAR) -->
+      <div id="hasReportState" class="hidden space-y-6">
+        <!-- Bar Status Pengesahan Laporan Rasmi -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-4 no-print">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+              <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[11px] font-black rounded uppercase">LAPORAN OPR DISAHKAN</span>
+                <span id="viewReportIdBadge" class="font-mono text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">ID: REP-</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Tarikh Rekod: <span id="viewReportDate" class="font-semibold text-slate-700">-</span> • Sumber: <strong class="text-slate-700">opr.semekar.com (Unit HEM)</strong></p>
             </div>
           </div>
-          <div class="w-20 hidden md:block"></div>
-        </div>
 
-        <!-- Butiran Utama -->
-        <div class="grid grid-cols-2 gap-4 text-xs mb-5 bg-slate-50 p-4 rounded-xl border border-slate-200">
-          <div>
-            <p><span class="font-bold text-slate-600">NAMA GURU (MENTOR):</span> <span id="opr-mentor" class="font-bold text-slate-900">-</span></p>
-            <p class="mt-1"><span class="font-bold text-slate-600">NAMA MENTEE:</span> <span id="opr-mentee" class="font-bold text-slate-900">-</span></p>
-            <p class="mt-1"><span class="font-bold text-slate-600">KELAS:</span> <span id="opr-kelas" class="font-bold text-slate-900">-</span></p>
-          </div>
-          <div>
-            <p><span class="font-bold text-slate-600">SESI PERTEMUAN:</span> <span id="opr-sesi" class="font-bold text-blue-700">Pertemuan 1</span></p>
-            <p class="mt-1"><span class="font-bold text-slate-600">SUMBER PENGISIAN:</span> <span class="font-semibold text-slate-800">opr.semekar.com (Unit HEM)</span></p>
-            <p class="mt-1"><span class="font-bold text-slate-600">PAUTAN REKOD OPR:</span> <a id="opr-url-link" href="#" target="_blank" class="font-mono text-blue-600 underline">Telah disahkan dalam sistem</a></p>
+          <div class="flex items-center gap-2">
+            <a id="btnBukaTabLaporan" href="#" target="_blank" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl border border-slate-300 flex items-center gap-1.5 transition">
+              <i data-lucide="external-link" class="w-3.5 h-3.5 text-blue-600"></i> Buka Skrin Penuh
+            </a>
+            <button onclick="cetakLaporanOpr()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition">
+              <i data-lucide="printer" class="w-3.5 h-3.5"></i> Cetak Laporan Ini
+            </button>
           </div>
         </div>
 
-        <!-- Dua Petak Gambar -->
-        <div class="grid grid-cols-2 gap-4 mb-5">
-          <div class="border border-slate-300 rounded-xl p-2 text-center bg-slate-50">
-            <p class="text-[10px] font-bold text-slate-500 mb-2 uppercase">Profil Mentee</p>
-            <div class="h-44 w-full flex items-center justify-center bg-slate-200 rounded-lg overflow-hidden">
-              <img id="opr-img-mentee" src="" class="h-full w-full object-cover hidden" alt="Foto Mentee">
-              <div id="opr-no-img" class="text-slate-400 text-xs flex flex-col items-center">
-                <i data-lucide="user" class="w-8 h-8 mb-1"></i> Tiada Gambar
+        <!-- 1. BINGKAI PAPARAN LAPORAN OPR SEBENAR (LIVE EMBEDDED OPR REPORT) -->
+        <div class="bg-white rounded-3xl shadow-md border border-slate-300 overflow-hidden no-print">
+          <div class="bg-slate-100 border-b border-slate-200 px-5 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-rose-400"></span>
+              <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+              <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+              <span class="ml-2 text-xs font-bold text-slate-600">Paparan Dokumen Laporan OPR (opr.semekar.com)</span>
+            </div>
+            <span class="text-[11px] text-slate-400 font-mono">Unit HEM - Sesi Bimbingan Mentor</span>
+          </div>
+          <iframe id="oprReportIframe" src="" class="w-full h-[850px] border-0 bg-white"></iframe>
+        </div>
+
+        <!-- 2. TEMPLAT CETAKAN RESMI A4 OPR HEM (DIGUNAKAN UNTUK CETAKAN / PDF) -->
+        <div id="printArea" class="bg-white p-8 md:p-12 rounded-2xl shadow-md border border-slate-300 max-w-4xl mx-auto text-slate-900">
+          <div class="border-b-2 border-slate-800 pb-4 mb-5 flex items-center justify-between gap-4">
+            <img src="logo.png" alt="Logo SEMEKAR" class="w-20 h-20 object-contain" onerror="this.onerror=null; this.src='https://placehold.co/100x100?text=SEMEKAR'">
+            <div class="flex-1 text-center">
+              <h2 class="text-xl font-black tracking-wide uppercase">SMK KAMARUL ARIFFIN (SEMEKAR)</h2>
+              <p class="text-xs text-slate-600 font-semibold uppercase">PENGURUSAN HAL EHWAL MURID (HEM) • UNIT BIMBINGAN & KAUNSELING</p>
+              <div class="inline-block mt-2 px-3 py-1 bg-slate-900 text-white text-xs font-bold rounded tracking-wider uppercase">
+                ONE PAGE REPORT (OPR) - PROGRAM MENTOR MENTEE SPM
+              </div>
+            </div>
+            <div class="w-20 hidden md:block"></div>
+          </div>
+
+          <!-- Butiran Dokumen -->
+          <div class="grid grid-cols-2 gap-4 text-xs mb-5 bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <div>
+              <p><span class="font-bold text-slate-600">NAMA GURU (MENTOR):</span> <span id="opr-mentor" class="font-bold text-slate-900">-</span></p>
+              <p class="mt-1"><span class="font-bold text-slate-600">NAMA MENTEE:</span> <span id="opr-mentee" class="font-bold text-slate-900">-</span></p>
+              <p class="mt-1"><span class="font-bold text-slate-600">KELAS:</span> <span id="opr-kelas" class="font-bold text-slate-900">-</span></p>
+            </div>
+            <div>
+              <p><span class="font-bold text-slate-600">SESI PERTEMUAN:</span> <span id="opr-sesi" class="font-bold text-blue-700">Pertemuan 1</span></p>
+              <p class="mt-1"><span class="font-bold text-slate-600">ID LAPORAN OPR:</span> <span id="opr-id-text" class="font-mono font-bold text-slate-900">-</span></p>
+              <p class="mt-1"><span class="font-bold text-slate-600">TARIKH PENGISIAN:</span> <span id="opr-date-text" class="font-medium text-slate-800">-</span></p>
+            </div>
+          </div>
+
+          <!-- Slot Gambar Mentee & Bimbingan -->
+          <div class="grid grid-cols-2 gap-4 mb-5">
+            <div class="border border-slate-300 rounded-xl p-2 text-center bg-slate-50">
+              <p class="text-[10px] font-bold text-slate-500 mb-2 uppercase">Profil Mentee</p>
+              <div class="h-44 w-full flex items-center justify-center bg-slate-200 rounded-lg overflow-hidden">
+                <img id="opr-img-mentee" src="" class="h-full w-full object-cover hidden" alt="Foto Mentee">
+                <div id="opr-no-img" class="text-slate-400 text-xs flex flex-col items-center">
+                  <i data-lucide="user" class="w-8 h-8 mb-1"></i> Tiada Gambar
+                </div>
+              </div>
+            </div>
+            <div class="border border-slate-300 rounded-xl p-2 text-center bg-slate-50">
+              <p class="text-[10px] font-bold text-slate-500 mb-2 uppercase">Status Pengesahan Laporan HEM</p>
+              <div class="h-44 w-full flex flex-col items-center justify-center bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-center text-emerald-800">
+                <i data-lucide="check-circle" class="w-10 h-10 text-emerald-600 mb-2"></i>
+                <span class="font-bold text-xs uppercase">Laporan Rasmi Telah Dihantar</span>
+                <span class="text-[10px] text-slate-500 mt-1">Disimpan dalam Pangkalan Data Unit HEM SEMEKAR</span>
               </div>
             </div>
           </div>
-          <div class="border border-slate-300 rounded-xl p-2 text-center bg-slate-50">
-            <p class="text-[10px] font-bold text-slate-500 mb-2 uppercase">Foto Aktiviti Bimbingan Mentee</p>
-            <div class="h-44 w-full flex items-center justify-center bg-slate-200 rounded-lg overflow-hidden text-slate-400 text-xs">
-              <div class="flex flex-col items-center">
-                <i data-lucide="image" class="w-8 h-8 mb-1"></i>
-                <span>Foto Sesi Bimbingan Mentor Mentee</span>
-              </div>
+
+          <!-- Catatan & Refleksi -->
+          <div class="space-y-3 text-xs mb-8">
+            <div class="border border-slate-300 p-3 rounded-lg">
+              <h4 class="font-bold text-slate-800 uppercase mb-1">1. Fokus & Isu Perbincangan Bimbingan:</h4>
+              <p class="text-slate-700 leading-relaxed" id="opr-fokus">
+                Bimbingan pencapaian akademik subjek kritikal, motivasi dan persediaan emosi menjelang Peperiksaan Percubaan dan SPM Sebenar, serta perbincangan teknik ulangkaji modul berfokus.
+              </p>
+            </div>
+
+            <div class="border border-slate-300 p-3 rounded-lg">
+              <h4 class="font-bold text-slate-800 uppercase mb-1">2. Catatan Refleksi & Maklum Balas:</h4>
+              <p class="text-slate-700 leading-relaxed" id="opr-refleksi">-</p>
             </div>
           </div>
-        </div>
 
-        <!-- Fokus & Catatan -->
-        <div class="space-y-3 text-xs mb-8">
-          <div class="border border-slate-300 p-3 rounded-lg">
-            <h4 class="font-bold text-slate-800 uppercase mb-1">1. Fokus & Isu Perbincangan:</h4>
-            <p class="text-slate-700 leading-relaxed" id="opr-fokus">
-              Bimbingan pencapaian akademik subjek kritikal, motivasi dan persediaan emosi menjelang Peperiksaan Percubaan dan SPM Sebenar, serta perbincangan teknik ulangkaji modul berfokus.
-            </p>
-          </div>
-
-          <div class="border border-slate-300 p-3 rounded-lg">
-            <h4 class="font-bold text-slate-800 uppercase mb-1">2. Catatan Refleksi & Maklum Balas:</h4>
-            <p class="text-slate-700 leading-relaxed" id="opr-refleksi">
-              Murid menunjukkan sikap positif, bersedia mematuhi jadual belajar kendiri dan komited untuk hadir ke setiap sesi kelas tambahan yang dianjurkan oleh pihak sekolah.
-            </p>
-          </div>
-        </div>
-
-        <!-- Ruang Pengesahan -->
-        <div class="grid grid-cols-2 gap-12 text-xs pt-8 border-t border-slate-300">
-          <div>
-            <p class="font-bold">Disediakan Oleh:</p>
-            <div class="h-14"></div>
-            <p class="font-bold border-t border-slate-400 pt-1" id="opr-sign-mentor">Nama Guru Mentor</p>
-            <p class="text-[11px] text-slate-500">Guru Mentor SPM, SMK Kamarul Ariffin</p>
-          </div>
-          <div>
-            <p class="font-bold">Disahkan Oleh:</p>
-            <div class="h-14"></div>
-            <p class="font-bold border-t border-slate-400 pt-1">GPK HAL EHWAL MURID</p>
-            <p class="text-[11px] text-slate-500">SMK Kamarul Ariffin (SEMEKAR)</p>
+          <!-- Pengesahan -->
+          <div class="grid grid-cols-2 gap-12 text-xs pt-8 border-t border-slate-300">
+            <div>
+              <p class="font-bold">Disediakan Oleh:</p>
+              <div class="h-14"></div>
+              <p class="font-bold border-t border-slate-400 pt-1" id="opr-sign-mentor">Nama Guru Mentor</p>
+              <p class="text-[11px] text-slate-500">Guru Mentor SPM, SMK Kamarul Ariffin</p>
+            </div>
+            <div>
+              <p class="font-bold">Disahkan Oleh:</p>
+              <div class="h-14"></div>
+              <p class="font-bold border-t border-slate-400 pt-1">GPK HAL EHWAL MURID</p>
+              <p class="text-[11px] text-slate-500">SMK Kamarul Ariffin (SEMEKAR)</p>
+            </div>
           </div>
         </div>
       </div>
@@ -318,7 +381,7 @@
 
   </main>
 
-  <!-- Modal Kemaskini Gambar Mentee -->
+  <!-- MODAL GAMBAR MENTEE -->
   <div id="imageModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 flex items-center justify-center p-4 hidden no-print">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
       <div class="flex justify-between items-center mb-4">
@@ -364,9 +427,9 @@
     let laporanList = [];
     let activeMenteeForModal = null;
 
-    // FUNGSI KAWALAN DIALOG PEMAKLUMAN
+    // KAWALAN DIALOG PEMAKLUMAN
     function showLoadingDialog(title, desc) {
-      document.getElementById('loadingTitle').textContent = title || "Sedang Mengemaskini Data...";
+      document.getElementById('loadingTitle').textContent = title || "Sedang Menyegerak Data...";
       document.getElementById('loadingDesc').textContent = desc || "Sila tunggu sebentar sementara sistem memproses data anda.";
       document.getElementById('loadingDialog').classList.remove('hidden');
       lucide.createIcons();
@@ -385,7 +448,22 @@
       }, 5000);
     }
 
-    // 1. PENGESAN BALIK AUTOMATIK (CALLBACK LISTENER)
+    // 1. CARI REKOD LAPORAN UNTUK SESI
+    function findReportForSession(bil, sesiNum) {
+      if (!laporanList || laporanList.length === 0) return null;
+      
+      // Susun rekod terkini terlebih dahulu
+      const sorted = [...laporanList].sort((a, b) => String(b.timestamp || '').localeCompare(String(a.timestamp || '')));
+      
+      return sorted.find(r => {
+        if (parseInt(r.bil) !== parseInt(bil)) return false;
+        const s = String(r.sesi || "").toLowerCase();
+        const target = String(sesiNum).toLowerCase();
+        return s === `pertemuan ${target}` || s === target || s.includes(`pertemuan ${target}`) || s.endsWith(` ${target}`);
+      });
+    }
+
+    // 2. PENGESAN BALIK AUTOMATIK (CALLBACK DARI OPR.SEMEKAR.COM)
     async function semakCallbackOpr() {
       const urlParams = new URLSearchParams(window.location.search);
       const status = urlParams.get('status');
@@ -395,14 +473,13 @@
       if (status === 'selesai' && bil) {
         showLoadingDialog(
           "Merekodkan Pertemuan SPM...", 
-          "Laporan telah diterima daripada opr.semekar.com. Menyegerak data ke Google Sheets..."
+          "Laporan telah diterima daripada opr.semekar.com. Menyegerak rekod ke Google Sheets..."
         );
 
         const mentee = menteesData.find(m => m.bil === bil);
         const currentReports = mentee ? (mentee.reports || 0) : 0;
         const sesiBaharu = Math.min(8, currentReports + 1);
 
-        // Hantar simpanan secara GET (Kalis Ralat CORS)
         try {
           const saveUrl = `${SCRIPT_URL}?action=simpanLaporanOprAutomatik&bil=${bil}&nama=${encodeURIComponent(mentee ? mentee.nama : '')}&mentor=${encodeURIComponent(mentee ? mentee.mentor : '')}&kelas=${mentee ? mentee.kelas : ''}&sesi=${sesiBaharu}&oprUrl=${encodeURIComponent(oprLink)}`;
           await fetch(saveUrl, { mode: 'no-cors' });
@@ -410,18 +487,21 @@
           console.error("Gagal simpan ke Sheet:", e);
         }
 
-        // Muat semula data terkini terus dari sheet untuk memastikan rekod sah
         await fetchDataFromSheet();
         hideLoadingDialog();
-        tunjukToast(`Pertemuan ${sesiBaharu} bagi murid #${bil} disahkan secara kekal!`);
+        tunjukToast(`Pertemuan ${sesiBaharu} bagi murid #${bil} disahkan secara automatik!`);
 
-        // Bersihkan parameter URL tanpa reload halaman
+        // Pilih murid dan buka terus tab laporan
+        document.getElementById('reportMenteeSelect').value = bil;
+        document.getElementById('reportSesiSelect').value = sesiBaharu;
+        switchTab('laporan');
+
         window.history.replaceState({}, document.title, window.location.pathname);
       }
     }
 
-    // 2. BUTANG KLIK ISI LAPORAN KE opr.semekar.com
-    function pergiKeOprHem(bil) {
+    // 3. BUTANG KLIK ISI LAPORAN KE OPR.SEMEKAR.COM
+    function pergiKeOprHem(bil, sesiKhusus) {
       const mentee = menteesData.find(m => m.bil === bil);
       if (!mentee) return;
 
@@ -431,16 +511,16 @@
       );
 
       const returnUrl = window.location.origin + window.location.pathname;
-      const sesiSeterusnya = Math.min(8, (mentee.reports || 0) + 1);
+      const sesiTarget = sesiKhusus ? sesiKhusus : Math.min(8, (mentee.reports || 0) + 1);
 
       const params = new URLSearchParams({
         unit: 'HEM',
-        aktiviti: `Program Mentor Mentee SPM (Siri ${sesiSeterusnya})`,
+        aktiviti: `Program Mentor Mentee SPM (Siri ${sesiTarget})`,
         nama_pelapor: mentee.mentor,
         mentee: mentee.nama,
         kelas: mentee.kelas,
         bil: mentee.bil,
-        sesi: sesiSeterusnya,
+        sesi: sesiTarget,
         return_url: returnUrl
       });
 
@@ -450,11 +530,17 @@
       }, 500);
     }
 
-    // 3. AMBIL DATA DARI GOOGLE SHEETS
+    function pergiKeOprDariLaporan() {
+      const bil = parseInt(document.getElementById('reportMenteeSelect').value);
+      const sesi = parseInt(document.getElementById('reportSesiSelect').value);
+      pergiKeOprHem(bil, sesi);
+    }
+
+    // 4. AMBIL DATA DARI GOOGLE SHEETS
     async function fetchDataFromSheet() {
       showLoadingDialog(
         "Menyegerakkan Data Terkini...", 
-        "Sedang menyemak pangkalan data Google Sheets untuk senarai mentee dan bilangan laporan..."
+        "Menyemak pangkalan data Google Sheets untuk senarai mentee dan rekod laporan..."
       );
 
       try {
@@ -491,7 +577,7 @@
       await semakCallbackOpr();
     });
 
-    // 4. NAVIGASI TAB
+    // 5. NAVIGASI TAB
     function switchTab(tabId) {
       ['senarai', 'dashboard', 'laporan'].forEach(tab => {
         document.getElementById(`page-${tab}`).classList.add('hidden');
@@ -524,7 +610,7 @@
       select.value = currentVal || 'ALL';
     }
 
-    // 5. PAPARAN KAD MENTEE
+    // 6. PAPARAN KAD MENTEE (PAGE 1)
     function renderMentees() {
       const filter = document.getElementById('mentorFilter').value;
       const search = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -585,11 +671,11 @@
             ${m.latestOprLink ? `
               <div class="mb-3 px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between text-xs text-emerald-800">
                 <span class="truncate flex items-center gap-1.5 font-semibold">
-                  <i data-lucide="file-check" class="w-3.5 h-3.5 text-emerald-600"></i> OPR Terkini:
+                  <i data-lucide="file-check" class="w-3.5 h-3.5 text-emerald-600"></i> Laporan Sedia Ada:
                 </span>
-                <a href="${m.latestOprLink}" target="_blank" class="text-blue-600 hover:underline font-bold shrink-0 ml-2 flex items-center gap-1">
-                  Buka OPR <i data-lucide="external-link" class="w-3 h-3"></i>
-                </a>
+                <button onclick="paparLaporanMentee(${m.bil})" class="text-blue-600 hover:underline font-bold shrink-0 ml-2 flex items-center gap-1">
+                  Lihat OPR <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                </button>
               </div>
             ` : ''}
           </div>
@@ -611,10 +697,11 @@
 
     function paparLaporanMentee(bil) {
       document.getElementById('reportMenteeSelect').value = bil;
+      onMenteeSelectChange();
       switchTab('laporan');
     }
 
-    // 6. MODAL GAMBAR MENTEE
+    // 7. MODAL GAMBAR MENTEE
     function openImageModal(bil, nama) {
       activeMenteeForModal = bil;
       const mentee = menteesData.find(m => m.bil === bil);
@@ -686,7 +773,7 @@
       }
     }
 
-    // 7. DASHBOARD & ANALITIK
+    // 8. DASHBOARD & ANALITIK
     let classChartInstance = null;
     let sessionChartInstance = null;
 
@@ -727,7 +814,7 @@
       const recentContainer = document.getElementById('recentReportsContainer');
       if (recentContainer) {
         if (!laporanList || laporanList.length === 0) {
-          recentContainer.innerHTML = `<div class="text-slate-400 py-3">Belum ada rekod laporan. Tekan 'Isi Laporan OPR' pada senarai mentee untuk memulakan pengisian di opr.semekar.com.</div>`;
+          recentContainer.innerHTML = `<div class="text-slate-400 py-3">Belum ada rekod laporan. Tekan 'Isi Laporan OPR' pada senarai mentee untuk memulakan.</div>`;
         } else {
           recentContainer.innerHTML = laporanList.slice(0, 8).map(r => `
             <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200">
@@ -799,9 +886,10 @@
       });
     }
 
-    // 8. HALAMAN CETAKAN OPR
+    // 9. HALAMAN CETAKAN OPR (PAGE 3)
     function populateReportMenteeDropdown() {
       const select = document.getElementById('reportMenteeSelect');
+      const currentVal = select.value;
       select.innerHTML = '';
       menteesData.forEach(m => {
         const opt = document.createElement('option');
@@ -809,6 +897,27 @@
         opt.textContent = `${m.kelas} - ${m.nama}`;
         select.appendChild(opt);
       });
+      if (currentVal) select.value = currentVal;
+      onMenteeSelectChange();
+    }
+
+    function onMenteeSelectChange() {
+      const bil = parseInt(document.getElementById('reportMenteeSelect').value);
+      const sesiSelect = document.getElementById('reportSesiSelect');
+      const curSesi = sesiSelect.value || "1";
+      
+      sesiSelect.innerHTML = '';
+      for (let i = 1; i <= 8; i++) {
+        const hasRep = findReportForSession(bil, i);
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = hasRep 
+          ? `Pertemuan ${i} (✓ Ada Laporan)` 
+          : `Pertemuan ${i} (✕ Tiada Laporan)`;
+        sesiSelect.appendChild(opt);
+      }
+      sesiSelect.value = curSesi;
+      updateReportView();
     }
 
     function updateReportView() {
@@ -817,35 +926,83 @@
       const mentee = menteesData.find(m => m.bil === bil);
       if (!mentee) return;
 
-      document.getElementById('opr-mentor').textContent = mentee.mentor;
-      document.getElementById('opr-sign-mentor').textContent = mentee.mentor;
-      document.getElementById('opr-mentee').textContent = mentee.nama;
-      document.getElementById('opr-kelas').textContent = mentee.kelas;
-      document.getElementById('opr-sesi').textContent = `Pertemuan Ke-${sesi} (Menjelang SPM)`;
+      const matchedRecord = findReportForSession(bil, sesi);
+      const btnPrint = document.getElementById('btnPrintReport');
 
-      const matchedRecord = (laporanList || []).find(r => r.bil === bil && (r.sesi === `Pertemuan ${sesi}` || r.sesi == sesi));
-      const oprLinkEl = document.getElementById('opr-url-link');
-      if (matchedRecord && matchedRecord.oprUrl) {
-        oprLinkEl.textContent = matchedRecord.oprUrl;
-        oprLinkEl.href = matchedRecord.oprUrl;
-      } else if (mentee.latestOprLink) {
-        oprLinkEl.textContent = mentee.latestOprLink;
-        oprLinkEl.href = mentee.latestOprLink;
-      } else {
-        oprLinkEl.textContent = "opr.semekar.com (Unit HEM)";
-        oprLinkEl.href = "https://opr.semekar.com";
+      // ================= KEADAAN 1: TIADA LAPORAN =================
+      if (!matchedRecord) {
+        document.getElementById('noReportState').classList.remove('hidden');
+        document.getElementById('hasReportState').classList.add('hidden');
+
+        document.getElementById('noReportMenteeNama').textContent = mentee.nama;
+        document.getElementById('noReportKelas').textContent = mentee.kelas;
+        document.getElementById('noReportMentor').textContent = mentee.mentor;
+        document.getElementById('noReportSesi').textContent = `Pertemuan Ke-${sesi}`;
+
+        btnPrint.disabled = true;
+        btnPrint.className = "w-full md:w-auto bg-slate-300 text-slate-500 font-medium px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 cursor-not-allowed";
+        btnPrint.innerHTML = `<i data-lucide="printer" class="w-4 h-4"></i> Tiada Laporan Untuk Dicetak`;
+      } 
+      // ================= KEADAAN 2: LAPORAN TELAH ADA =================
+      else {
+        document.getElementById('noReportState').classList.add('hidden');
+        document.getElementById('hasReportState').classList.remove('hidden');
+
+        btnPrint.disabled = false;
+        btnPrint.className = "w-full md:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-sm transition";
+        btnPrint.innerHTML = `<i data-lucide="printer" class="w-4 h-4"></i> Cetak / Simpan PDF (A4 OPR)`;
+
+        const oprUrl = matchedRecord.oprUrl || `https://opr.semekar.com`;
+        const repId = oprUrl.includes('#id=') ? oprUrl.split('#id=')[1] : 'OPR-HEM';
+        const repDate = matchedRecord.timestamp || 'Telah Disahkan';
+
+        // Kemaskini Bar Header Dokumen
+        document.getElementById('viewReportIdBadge').textContent = `ID: ${repId}`;
+        document.getElementById('viewReportDate').textContent = repDate;
+        document.getElementById('btnBukaTabLaporan').href = oprUrl;
+
+        // Muatkan Laporan Sebenar ke dalam Iframe Interaktif
+        const iframe = document.getElementById('oprReportIframe');
+        if (iframe.src !== oprUrl) {
+          iframe.src = oprUrl;
+        }
+
+        // Kemaskini Format Cetakan A4 Tempatan (#printArea)
+        document.getElementById('opr-mentor').textContent = mentee.mentor;
+        document.getElementById('opr-sign-mentor').textContent = mentee.mentor;
+        document.getElementById('opr-mentee').textContent = mentee.nama;
+        document.getElementById('opr-kelas').textContent = mentee.kelas;
+        document.getElementById('opr-sesi').textContent = `Pertemuan Ke-${sesi} (Menjelang SPM)`;
+        document.getElementById('opr-id-text').textContent = repId;
+        document.getElementById('opr-date-text').textContent = repDate;
+        document.getElementById('opr-refleksi').textContent = matchedRecord.refleksi || 'Laporan program mentor mentee telah diisi dan disahkan di portal rasmi opr.semekar.com (Unit HEM).';
+
+        const imgEl = document.getElementById('opr-img-mentee');
+        const noImgEl = document.getElementById('opr-no-img');
+        if (mentee.photoUrl) {
+          imgEl.src = mentee.photoUrl;
+          imgEl.classList.remove('hidden');
+          noImgEl.classList.add('hidden');
+        } else {
+          imgEl.classList.add('hidden');
+          noImgEl.classList.remove('hidden');
+        }
+      }
+      lucide.createIcons();
+    }
+
+    // Fungsi Cetak
+    function cetakLaporanOpr() {
+      const bil = parseInt(document.getElementById('reportMenteeSelect').value);
+      const sesi = document.getElementById('reportSesiSelect').value;
+      const matchedRecord = findReportForSession(bil, sesi);
+
+      if (!matchedRecord) {
+        alert("Tiada laporan untuk dicetak bagi sesi ini. Sila isi laporan terlebih dahulu.");
+        return;
       }
 
-      const imgEl = document.getElementById('opr-img-mentee');
-      const noImgEl = document.getElementById('opr-no-img');
-      if (mentee.photoUrl) {
-        imgEl.src = mentee.photoUrl;
-        imgEl.classList.remove('hidden');
-        noImgEl.classList.add('hidden');
-      } else {
-        imgEl.classList.add('hidden');
-        noImgEl.classList.remove('hidden');
-      }
+      window.print();
     }
   </script>
 </body>
