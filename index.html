@@ -208,7 +208,7 @@
       </div>
     </section>
 
-    <!-- ================= PAGE 3: CETAK LAPORAN OPR ================= -->
+    <!-- ================= PAGE 3: CETAK & PAPARAN LAPORAN OPR ================= -->
     <section id="page-laporan" class="space-y-6 hidden">
       <!-- Toolbar Pemilihan Mentee & Sesi -->
       <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 no-print">
@@ -223,8 +223,12 @@
           </div>
         </div>
 
-        <div class="w-full md:w-auto flex items-end">
-          <button id="btnPrintReport" onclick="cetakLaporanOpr()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-sm transition">
+        <!-- Butang Cetak & Kemaskini -->
+        <div class="w-full md:w-auto flex flex-wrap items-center gap-2">
+          <button id="btnEditReportTop" onclick="kemaskiniLaporanOpr()" class="hidden w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-sm transition">
+            <i data-lucide="edit-3" class="w-4 h-4"></i> Kemaskini Laporan OPR
+          </button>
+          <button id="btnPrintReport" onclick="cetakLaporanOpr()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-sm transition">
             <i data-lucide="printer" class="w-4 h-4"></i> Cetak Dokumen OPR
           </button>
         </div>
@@ -270,7 +274,12 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-2">
+          <!-- KUMPULAN BUTANG TINDAKAN -->
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- BUTANG KEMASKINI LAPORAN OPR -->
+            <button onclick="kemaskiniLaporanOpr()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition">
+              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Kemaskini Laporan (OPR)
+            </button>
             <a id="btnBukaTabLaporan" href="#" target="_blank" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl border border-slate-300 flex items-center gap-1.5 transition">
               <i data-lucide="external-link" class="w-3.5 h-3.5 text-blue-600"></i> Buka Tab Penuh
             </a>
@@ -388,6 +397,7 @@
       }, 5000);
     }
 
+    // 1. CARI REKOD LAPORAN UNTUK SESI
     function findReportForSession(bil, sesiNum) {
       if (!laporanList || laporanList.length === 0) return null;
       const target = parseInt(sesiNum);
@@ -410,43 +420,149 @@
       return null;
     }
 
+    // 2. FUNGSI MEMBINA URL EDIT KE OPR.SEMEKAR.COM
+    function binaUrlEditOpr(oprUrl, bil, sesi) {
+      if (!oprUrl) return 'https://opr.semekar.com';
+
+      let repId = '';
+      if (oprUrl.includes('#id=')) {
+        repId = oprUrl.split('#id=')[1].split('&')[0];
+      } else if (oprUrl.includes('id=')) {
+        const match = oprUrl.match(/id=([A-Za-z0-9\-_]+)/);
+        if (match) repId = match[1];
+      } else if (oprUrl.includes('/view/')) {
+        repId = oprUrl.split('/view/')[1].split('?')[0].split('#')[0];
+      }
+
+      const returnUrl = window.location.origin + window.location.pathname;
+      const params = new URLSearchParams({
+        action: 'edit',
+        id: repId,
+        edit: repId,
+        unit: 'HEM',
+        bil: bil || '',
+        sesi: sesi || '',
+        return_url: returnUrl
+      });
+
+      // Menghantar arahan edit melalui parameter query dan hash
+      if (repId) {
+        return `https://opr.semekar.com/?${params.toString()}#edit=${encodeURIComponent(repId)}`;
+      }
+      return oprUrl;
+    }
+
+    // 3. TINDAKAN BUTANG KEMASKINI
+    function kemaskiniLaporanOpr() {
+      const bil = parseInt(document.getElementById('reportMenteeSelect').value);
+      const sesi = document.getElementById('reportSesiSelect').value;
+      const matchedRecord = findReportForSession(bil, sesi);
+
+      if (!matchedRecord) {
+        alert("Tiada laporan sedia ada bagi sesi ini untuk dikemaskini. Sila klik 'Isi Laporan' untuk mencipta laporan baharu.");
+        return;
+      }
+
+      const editUrl = binaUrlEditOpr(matchedRecord.oprUrl, bil, sesi);
+      showLoadingDialog(
+        "Membuka Mod Kemaskini...", 
+        "Sedang menghubungkan ke borang kemaskini di opr.semekar.com..."
+      );
+
+      setTimeout(() => {
+        window.location.href = editUrl;
+      }, 500);
+    }
+
+    function kemaskiniLaporanDariCard(bil) {
+      const mentee = menteesData.find(m => m.bil === bil);
+      if (!mentee) return;
+
+      const latestSesi = mentee.reports || 1;
+      const matchedRecord = findReportForSession(bil, latestSesi) || { oprUrl: mentee.latestOprLink };
+      const editUrl = binaUrlEditOpr(matchedRecord.oprUrl, bil, latestSesi);
+
+      showLoadingDialog(
+        "Membuka Mod Kemaskini...", 
+        "Sedang membuka borang kemaskini bagi " + mentee.nama + " di opr.semekar.com..."
+      );
+
+      setTimeout(() => {
+        window.location.href = editUrl;
+      }, 500);
+    }
+
+    // 4. CALLBACK DARI OPR.SEMEKAR.COM (KEMASKINI VS SELESAI)
     async function semakCallbackOpr() {
       const urlParams = new URLSearchParams(window.location.search);
       const status = urlParams.get('status');
       const bil = parseInt(urlParams.get('bil'));
+      const sesi = urlParams.get('sesi');
       const oprLink = urlParams.get('link') || urlParams.get('opr_link') || 'https://opr.semekar.com';
 
-      if (status === 'selesai' && bil) {
-        showLoadingDialog(
-          "Merekodkan Pertemuan SPM...", 
-          "Laporan telah diterima daripada opr.semekar.com. Menyegerak rekod ke Google Sheets..."
-        );
+      if (status && bil) {
+        // JIKA STATUS KEMASKINI: Jangan tambah sesi, cuma kemaskini pautan
+        if (status === 'kemaskini' || status === 'edit') {
+          showLoadingDialog(
+            "Mengemaskini Rekod Laporan...", 
+            "Laporan telah dikemaskini di opr.semekar.com. Menyelaras pangkalan data..."
+          );
 
-        const mentee = menteesData.find(m => m.bil === bil);
-        const existingCount = laporanList.filter(r => parseInt(r.bil) === bil).length;
-        const sesiBaharu = Math.min(8, existingCount + 1);
+          try {
+            const saveUrl = `${SCRIPT_URL}?action=kemaskiniLaporanOpr&bil=${bil}&sesi=${encodeURIComponent(sesi || '1')}&oprUrl=${encodeURIComponent(oprLink)}`;
+            await fetch(saveUrl, { mode: 'no-cors' });
+          } catch(e) {
+            console.error("Gagal simpan kemaskini:", e);
+          }
 
-        try {
-          const saveUrl = `${SCRIPT_URL}?action=simpanLaporanOprAutomatik&bil=${bil}&nama=${encodeURIComponent(mentee ? mentee.nama : '')}&mentor=${encodeURIComponent(mentee ? mentee.mentor : '')}&kelas=${mentee ? mentee.kelas : ''}&sesi=${sesiBaharu}&oprUrl=${encodeURIComponent(oprLink)}`;
-          await fetch(saveUrl, { mode: 'no-cors' });
-        } catch (e) {
-          console.error("Gagal simpan ke Sheet:", e);
+          await fetchDataFromSheet();
+          hideLoadingDialog();
+          tunjukToast(`Laporan bagi murid #${bil} berjaya dikemaskini!`);
+
+          document.getElementById('reportMenteeSelect').value = bil;
+          onMenteeSelectChange();
+          if (sesi) document.getElementById('reportSesiSelect').value = sesi;
+          updateReportView();
+          switchTab('laporan');
+
+          window.history.replaceState({}, document.title, window.location.pathname);
+          return;
         }
 
-        await fetchDataFromSheet();
-        hideLoadingDialog();
-        tunjukToast(`Pertemuan ${sesiBaharu} bagi murid #${bil} disahkan secara kekal!`);
+        // JIKA STATUS SELESAI (Laporan Baharu): Tambah bilangan sesi
+        if (status === 'selesai') {
+          showLoadingDialog(
+            "Merekodkan Pertemuan SPM...", 
+            "Laporan telah diterima daripada opr.semekar.com. Menyegerak rekod ke Google Sheets..."
+          );
 
-        document.getElementById('reportMenteeSelect').value = bil;
-        onMenteeSelectChange();
-        document.getElementById('reportSesiSelect').value = sesiBaharu;
-        updateReportView();
-        switchTab('laporan');
+          const mentee = menteesData.find(m => m.bil === bil);
+          const existingCount = laporanList.filter(r => parseInt(r.bil) === bil).length;
+          const sesiBaharu = Math.min(8, existingCount + 1);
 
-        window.history.replaceState({}, document.title, window.location.pathname);
+          try {
+            const saveUrl = `${SCRIPT_URL}?action=simpanLaporanOprAutomatik&bil=${bil}&nama=${encodeURIComponent(mentee ? mentee.nama : '')}&mentor=${encodeURIComponent(mentee ? mentee.mentor : '')}&kelas=${mentee ? mentee.kelas : ''}&sesi=${sesiBaharu}&oprUrl=${encodeURIComponent(oprLink)}`;
+            await fetch(saveUrl, { mode: 'no-cors' });
+          } catch (e) {
+            console.error("Gagal simpan ke Sheet:", e);
+          }
+
+          await fetchDataFromSheet();
+          hideLoadingDialog();
+          tunjukToast(`Pertemuan ${sesiBaharu} bagi murid #${bil} disahkan secara kekal!`);
+
+          document.getElementById('reportMenteeSelect').value = bil;
+          onMenteeSelectChange();
+          document.getElementById('reportSesiSelect').value = sesiBaharu;
+          updateReportView();
+          switchTab('laporan');
+
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
       }
     }
 
+    // 5. ISI LAPORAN BAHARU
     function pergiKeOprHem(bil, sesiKhusus) {
       const mentee = menteesData.find(m => m.bil === bil);
       if (!mentee) return;
@@ -483,6 +599,7 @@
       pergiKeOprHem(bil, sesi);
     }
 
+    // 6. AMBIL DATA DARI GOOGLE SHEETS
     async function fetchDataFromSheet() {
       showLoadingDialog(
         "Menyegerakkan Data Terkini...", 
@@ -523,6 +640,7 @@
       await semakCallbackOpr();
     });
 
+    // 7. NAVIGASI TAB
     function switchTab(tabId) {
       ['senarai', 'dashboard', 'laporan'].forEach(tab => {
         document.getElementById(`page-${tab}`).classList.add('hidden');
@@ -555,6 +673,7 @@
       select.value = currentVal || 'ALL';
     }
 
+    // 8. PAPARAN KAD MENTEE (PAGE 1)
     function renderMentees() {
       const filter = document.getElementById('mentorFilter').value;
       const search = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -613,14 +732,20 @@
               </div>
             </div>
 
+            <!-- BAHAGIAN LAPORAN SEDIA ADA DENGAN BUTANG KEMASKINI PANTAS -->
             ${m.latestOprLink ? `
               <div class="mb-3 px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between text-xs text-emerald-800">
                 <span class="truncate flex items-center gap-1.5 font-semibold">
                   <i data-lucide="file-check" class="w-3.5 h-3.5 text-emerald-600"></i> Laporan Sedia Ada:
                 </span>
-                <button onclick="paparLaporanMentee(${m.bil})" class="text-blue-600 hover:underline font-bold shrink-0 ml-2 flex items-center gap-1">
-                  Lihat OPR <i data-lucide="arrow-right" class="w-3 h-3"></i>
-                </button>
+                <div class="flex items-center gap-2 shrink-0">
+                  <button onclick="paparLaporanMentee(${m.bil})" class="text-blue-600 hover:underline font-bold flex items-center gap-1">
+                    Lihat <i data-lucide="eye" class="w-3 h-3"></i>
+                  </button>
+                  <button onclick="kemaskiniLaporanDariCard(${m.bil})" class="text-amber-600 hover:underline font-bold flex items-center gap-1" title="Kemaskini Laporan OPR Terkini">
+                    Kemaskini <i data-lucide="edit-3" class="w-3 h-3"></i>
+                  </button>
+                </div>
               </div>
             ` : ''}
           </div>
@@ -628,9 +753,9 @@
           <div class="pt-2 border-t border-slate-100 flex items-center gap-2">
             <button onclick="pergiKeOprHem(${m.bil})" 
               class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm transition">
-              <i data-lucide="file-edit" class="w-3.5 h-3.5"></i> Isi Laporan OPR (Unit HEM)
+              <i data-lucide="file-plus" class="w-3.5 h-3.5"></i> Isi Laporan OPR (Unit HEM)
             </button>
-            <button onclick="paparLaporanMentee(${m.bil})" title="Cetak Laporan Mentee" class="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl border border-slate-200 transition">
+            <button onclick="paparLaporanMentee(${m.bil})" title="Cetak / Lihat Laporan Mentee" class="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl border border-slate-200 transition">
               <i data-lucide="printer" class="w-4 h-4"></i>
             </button>
           </div>
@@ -646,7 +771,7 @@
       switchTab('laporan');
     }
 
-    // ================= PENGENDALIAN KAMERA TELEFON & MAMPATAN IMEJ =================
+    // ================= 9. PENGENDALIAN KAMERA TELEFON & GAMBAR =================
     function openImageModal(bil, nama) {
       activeMenteeForModal = bil;
       const mentee = menteesData.find(m => m.bil === bil);
@@ -690,8 +815,6 @@
       reader.onload = function(e) {
         const img = new Image();
         img.onload = function() {
-          // MAMPATKAN KEPADA MAKSIMUM 240px (SAIZ PROFIL PASPORT)
-          // Menghasilkan rentetan ringan (~15KB) yang kalis sekatan Google Sheet
           const maxDim = 240;
           let width = img.width;
           let height = img.height;
@@ -731,10 +854,9 @@
       closeImageModal();
       showLoadingDialog(
         "Menyimpan Foto Mentee...", 
-        "Sedang memuat naik foto ke pangkalan data Google Sheets..."
+        "Sedang merekodkan foto ke dalam pangkalan data..."
       );
 
-      // Kemaskini paparan lokal serta merta
       const mentee = menteesData.find(m => m.bil === bilTarget);
       if (mentee) {
         mentee.photoUrl = photoUrl;
@@ -763,15 +885,15 @@
         }
 
         hideLoadingDialog();
-        tunjukToast("Foto mentee berjaya disimpan secara kekal!");
+        tunjukToast("Foto mentee berjaya disimpan!");
       } catch (err) {
-        console.warn("Ralat rangkaian foto:", err);
+        console.warn("Ralat simpan gambar:", err);
         hideLoadingDialog();
         tunjukToast("Foto mentee disimpan dalam peranti.");
       }
     }
 
-    // DASHBOARD & ANALITIK
+    // 10. DASHBOARD & ANALITIK
     let classChartInstance = null;
     let sessionChartInstance = null;
 
@@ -820,9 +942,9 @@
                 <span class="font-bold text-slate-800">${r.nama}</span> (${r.kelas}) • <span class="text-blue-600 font-semibold">${r.sesi}</span>
                 <p class="text-[11px] text-slate-500 mt-0.5">Mentor: ${r.mentor}</p>
               </div>
-              <div class="text-right">
+              <div class="text-right flex items-center gap-2">
                 <span class="text-[10px] text-slate-400 block">${r.timestamp || ''}</span>
-                <a href="${r.oprUrl}" target="_blank" class="text-blue-600 hover:underline font-bold inline-flex items-center gap-1 mt-0.5">
+                <a href="${r.oprUrl}" target="_blank" class="text-blue-600 hover:underline font-bold inline-flex items-center gap-1">
                   <i data-lucide="external-link" class="w-3 h-3"></i> Buka OPR
                 </a>
               </div>
@@ -884,6 +1006,7 @@
       });
     }
 
+    // 11. HALAMAN CETAKAN & PAPARAN OPR (PAGE 3)
     function populateReportMenteeDropdown() {
       const select = document.getElementById('reportMenteeSelect');
       const currentVal = select.value;
@@ -939,10 +1062,13 @@
 
       const matchedRecord = findReportForSession(bil, sesi);
       const btnPrint = document.getElementById('btnPrintReport');
+      const btnEditTop = document.getElementById('btnEditReportTop');
 
+      // KEADAAN 1: TIADA LAPORAN
       if (!matchedRecord) {
         document.getElementById('noReportState').classList.remove('hidden');
         document.getElementById('hasReportState').classList.add('hidden');
+        btnEditTop.classList.add('hidden');
 
         document.getElementById('noReportMenteeNama').textContent = mentee.nama;
         document.getElementById('noReportKelas').textContent = mentee.kelas;
@@ -950,14 +1076,17 @@
         document.getElementById('noReportSesi').textContent = `Pertemuan Ke-${sesi}`;
 
         btnPrint.disabled = true;
-        btnPrint.className = "w-full md:w-auto bg-slate-300 text-slate-500 font-medium px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 cursor-not-allowed";
+        btnPrint.className = "w-full sm:w-auto bg-slate-300 text-slate-500 font-medium px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 cursor-not-allowed";
         btnPrint.innerHTML = `<i data-lucide="printer" class="w-4 h-4"></i> Tiada Laporan Untuk Dicetak`;
-      } else {
+      } 
+      // KEADAAN 2: LAPORAN TELAH ADA
+      else {
         document.getElementById('noReportState').classList.add('hidden');
         document.getElementById('hasReportState').classList.remove('hidden');
+        btnEditTop.classList.remove('hidden');
 
         btnPrint.disabled = false;
-        btnPrint.className = "w-full md:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-sm transition";
+        btnPrint.className = "w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-sm transition";
         btnPrint.innerHTML = `<i data-lucide="printer" class="w-4 h-4"></i> Cetak Dokumen OPR`;
 
         const oprUrl = matchedRecord.oprUrl || `https://opr.semekar.com`;
