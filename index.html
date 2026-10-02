@@ -27,19 +27,14 @@
 
   <!-- ================= DIALOG PEMAKLUMAN SEDANG KEMASKINI DATA ================= -->
   <div id="loadingDialog" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print transition-opacity duration-200">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 text-center flex flex-col items-center animate-bounce-short">
-      <!-- Ikon Animasi Berpusing -->
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 text-center flex flex-col items-center">
       <div class="relative w-16 h-16 mb-4 flex items-center justify-center">
         <div class="absolute inset-0 rounded-full border-4 border-blue-100"></div>
         <div class="absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent animate-spin"></div>
         <i data-lucide="refresh-cw" class="w-6 h-6 text-blue-600"></i>
       </div>
-
-      <!-- Tajuk & Penerangan Dialog -->
       <h3 id="loadingTitle" class="font-extrabold text-base text-slate-900 mb-1">Sedang Mengemaskini Data...</h3>
-      <p id="loadingDesc" class="text-xs text-slate-500 mb-4 leading-relaxed">Sila tunggu sebentar sementara sistem memproses dan menyegerakkan data ke Google Sheets.</p>
-      
-      <!-- Bar Kemajuan Visual Animasi -->
+      <p id="loadingDesc" class="text-xs text-slate-500 mb-4 leading-relaxed">Sila tunggu sebentar sementara sistem menyegerakkan data ke Google Sheets.</p>
       <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
         <div class="bg-blue-600 h-full rounded-full animate-pulse w-full"></div>
       </div>
@@ -110,10 +105,10 @@
         </div>
 
         <div class="w-full md:w-auto flex items-end">
-          <div class="bg-blue-50 border border-blue-200 text-blue-800 text-xs px-4 py-2.5 rounded-xl flex items-center gap-2">
-            <i data-lucide="shield-check" class="w-4 h-4 text-blue-600 shrink-0"></i>
-            <span>Pelaporan rasmi terus di bawah <strong>opr.semekar.com (Unit HEM)</strong>.</span>
-          </div>
+          <button onclick="fetchDataFromSheet()" class="w-full md:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium px-4 py-2.5 rounded-xl border border-slate-300 flex items-center gap-2 transition">
+            <i data-lucide="refresh-cw" class="w-4 h-4 text-blue-600"></i>
+            <span>Segerak Data Terkini</span>
+          </button>
         </div>
       </div>
 
@@ -364,53 +359,9 @@
   <!-- SCRIPT LOGIK & INTEGRASI AUTOMATIK -->
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxlSiiVIh9_j2FmrztwnmmUCGwNxWVuDKlLn3H0ZyFJh8M5I3LFgw0lrXqkcZilJPuUaw/exec";
-    const SHEET_ID = "1P7f5ljO2qaqiYkdKDHJupaEu9SymfqEV8veYXeHSZVQ";
 
-    // 40 Calon Mentee SEMEKAR
-    let menteesData = [
-      { bil: 1, nama: "AFIF HAFIY BIN MOHD AFIQ", kelas: "5S1", mentor: "NORHAYATI BT MD. ZAIN", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 2, nama: "CHENG ZHI XUEN", kelas: "5S1", mentor: "MOHAMAAD FADZELI BIN AZAM", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 3, nama: "HONG ZI XIN", kelas: "5S1", mentor: "ZAINAL B MOHD ZABIR", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 4, nama: "JENNISER YOW YI EN", kelas: "5S1", mentor: "ZAIMAH BINTI SAMAD", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 5, nama: "JONATHAN TAN HAO YUAN", kelas: "5S1", mentor: "MASNON BIN AMAT", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 6, nama: "LIM QI SHENG", kelas: "5S1", mentor: "TAN BEE KEAN", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 7, nama: "MARCUS EE PIAO XUAN", kelas: "5S1", mentor: "NURUL HAMIZAH BINTI MD SAID", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 8, nama: "NUR ALIESYA TAN BINTI ABDULLAH", kelas: "5S1", mentor: "NUR AINA NAJWA BINTI MOHD NOR", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 9, nama: "NUR SYAAFIAH SABRINA BINTI ABDULLAH", kelas: "5S1", mentor: "NURUL HAMIZAH BINTI MD SAID", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 10, nama: "ABBY ALKASHA BINTI ANUAR", kelas: "5S2", mentor: "NORHAYATI BT MD. ZAIN", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 11, nama: "ADAM RAYYAN BIN KHAIRUL ANUAR", kelas: "5S2", mentor: "ABD HADI B ADMAN (PENGETUA)", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 12, nama: "AMMAR SHAKIR BIN MAZLAN", kelas: "5S2", mentor: "MOHD RIDUWAN BIN MOHD YASAN", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 13, nama: "HARINI A/P VADIVELAN", kelas: "5S2", mentor: "TAMILVANI A/P KRISHNAN", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 14, nama: "JUNO WONG JUN LE", kelas: "5S2", mentor: "NORUL HAFIDZAH BINTI HASSAN", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 15, nama: "KHADIJAH BINTI SALIHEN", kelas: "5S2", mentor: "NUR AINA NAJWA BINTI MOHD NOR", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 16, nama: "MUHAMAD AFIQ BIN NORAZLI", kelas: "5S2", mentor: "NUR FATIN NAZIRAH BINTI RASHIDI", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 17, nama: "MUHAMMAD AZIQ THAQIF BIN MOHD ISA", kelas: "5S2", mentor: "ABD HADI B ADMAN (PENGETUA)", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 18, nama: "MUHAMMAD DANIAL ARASH BIN SARKAN", kelas: "5S2", mentor: "OSKASMAZILA BINTI OSMAN", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 19, nama: "MUHAMMAD MU'IZ BIN RAZALI", kelas: "5S2", mentor: "MUHAMMAD AMIRUL AIMAN BIN ZAKARIA", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 20, nama: "NUR FARAH ALYSAH BINTI ZULKEFPLAI", kelas: "5S2", mentor: "NORIHAN BINTI YUSOF", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 21, nama: "NUR FATIHA BINTI KAHAR", kelas: "5S2", mentor: "MOHD NIZAM BIN SUBANI", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 22, nama: "NURFAHANA BINTI MOHD YUSUF", kelas: "5S2", mentor: "NORIHAN BINTI YUSOF", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 23, nama: "PUTERA AZHAD BIN MOHD ROUB", kelas: "5S2", mentor: "MUHAMMAD SYADZA BIN YUSOF", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 24, nama: "PUTERI ILEEYA MAISARA BINTI ISMAIL", kelas: "5S2", mentor: "TANTY BTE RAMLI", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 25, nama: "PUTERI NATASYA ALYAA BINTI ZAIDI", kelas: "5S2", mentor: "TANTY BTE RAMLI", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 26, nama: "PUTERI QALEESYA ARYANA BINTI BAHRIN", kelas: "5S2", mentor: "NUR FATIN NAZIRAH BINTI RASHIDI", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 27, nama: "SURENTARN A/L K NARAYANAN", kelas: "5S2", mentor: "NORFAIZAH BINTI ISMAIL", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 28, nama: "TAN TAI FENG", kelas: "5S2", mentor: "JESSICA CHAN LAI PENG", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 29, nama: "GOH YU ZHE", kelas: "5S3", mentor: "TAN BEE KEAN", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 30, nama: "MUHAMMAD ALIF SAFWAN BIN ABDULLAH", kelas: "5S3", mentor: "ROHANA BINTI JASMIN", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 31, nama: "MUHAMMAD ASFA RAZAN BIN MOHD GHARIB", kelas: "5S3", mentor: "SITI NUR HAKIMAH BINTI MOHD NOOR", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 32, nama: "MUHAMMAD DANIEL SHAH BIN HASZELLI", kelas: "5S3", mentor: "NORHAMIZAH BINTI SHAFIE", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 33, nama: "MUHAMMAD IRFAN BIN ABDUL JABAR ALI", kelas: "5S3", mentor: "MOHD RIDUWAN BIN MOHD YASAN", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 34, nama: "MUHAMMAD NAZRAN BIN HASBULLAH", kelas: "5S3", mentor: "MUHAMMAD AMIRUL AIMAN BIN ZAKARIA", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 35, nama: "MUHAMMAD RAYYAN BIN HEDLY", kelas: "5S3", mentor: "NORFAIZAH BINTI ISMAIL", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 36, nama: "NUR AIN ADLINA BINTI ABDUL RAHMAN", kelas: "5S3", mentor: "ROHANA BINTI JASMIN", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 37, nama: "NUR QASEH BINTI RAZIM", kelas: "5S3", mentor: "LAVANYA A/P VEJAYAN", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 38, nama: "SITINORMASHIDATUL BINTI MOHD ROZI", kelas: "5S3", mentor: "SITI HANIZA BINTI IMRAN", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 39, nama: "TEO KAH ZHENG", kelas: "5S3", mentor: "PENYELARAS TINGKATAN 5", photoUrl: "", reports: 0, latestOprLink: "" },
-      { bil: 40, nama: "TEY MING FONG", kelas: "5S3", mentor: "MUHAMMAD SYADZA BIN YUSOF", photoUrl: "", reports: 0, latestOprLink: "" }
-    ];
-
-    let laporanList = JSON.parse(localStorage.getItem('semekar_laporan_list') || '[]');
+    let menteesData = [];
+    let laporanList = [];
     let activeMenteeForModal = null;
 
     // FUNGSI KAWALAN DIALOG PEMAKLUMAN
@@ -443,55 +394,29 @@
 
       if (status === 'selesai' && bil) {
         showLoadingDialog(
-          "Merekodkan Laporan OPR...", 
-          "Laporan telah diterima daripada opr.semekar.com. Sedang mengemaskini pertemuan dan rekod Google Sheets..."
+          "Merekodkan Pertemuan SPM...", 
+          "Laporan telah diterima daripada opr.semekar.com. Menyegerak data ke Google Sheets..."
         );
 
         const mentee = menteesData.find(m => m.bil === bil);
-        if (mentee) {
-          const sesiBaharu = Math.min(8, (mentee.reports || 0) + 1);
-          mentee.reports = sesiBaharu;
-          mentee.latestOprLink = oprLink;
+        const currentReports = mentee ? (mentee.reports || 0) : 0;
+        const sesiBaharu = Math.min(8, currentReports + 1);
 
-          const newRecord = {
-            bil: bil,
-            nama: mentee.nama,
-            mentor: mentee.mentor,
-            kelas: mentee.kelas,
-            sesi: sesiBaharu,
-            oprUrl: oprLink,
-            tarikh: new Date().toISOString().split('T')[0],
-            waktu: new Date().toLocaleTimeString('ms-MY')
-          };
-          laporanList.unshift(newRecord);
-          localStorage.setItem('semekar_laporan_list', JSON.stringify(laporanList));
-          localStorage.setItem('semekar_mentees_cache', JSON.stringify(menteesData));
-
-          try {
-            await fetch(SCRIPT_URL, {
-              method: 'POST',
-              mode: 'no-cors',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                action: 'simpanLaporanOprAutomatik',
-                bil: bil,
-                nama: mentee.nama,
-                mentor: mentee.mentor,
-                kelas: mentee.kelas,
-                sesi: sesiBaharu,
-                oprUrl: oprLink
-              })
-            });
-          } catch (e) {
-            console.error("Gagal simpan ke Sheet:", e);
-          }
-
-          hideLoadingDialog();
-          tunjukToast(`Pertemuan ${sesiBaharu} bagi ${mentee.nama} disahkan secara automatik!`);
-          window.history.replaceState({}, document.title, window.location.pathname);
-        } else {
-          hideLoadingDialog();
+        // Hantar simpanan secara GET (Kalis Ralat CORS)
+        try {
+          const saveUrl = `${SCRIPT_URL}?action=simpanLaporanOprAutomatik&bil=${bil}&nama=${encodeURIComponent(mentee ? mentee.nama : '')}&mentor=${encodeURIComponent(mentee ? mentee.mentor : '')}&kelas=${mentee ? mentee.kelas : ''}&sesi=${sesiBaharu}&oprUrl=${encodeURIComponent(oprLink)}`;
+          await fetch(saveUrl, { mode: 'no-cors' });
+        } catch (e) {
+          console.error("Gagal simpan ke Sheet:", e);
         }
+
+        // Muat semula data terkini terus dari sheet untuk memastikan rekod sah
+        await fetchDataFromSheet();
+        hideLoadingDialog();
+        tunjukToast(`Pertemuan ${sesiBaharu} bagi murid #${bil} disahkan secara kekal!`);
+
+        // Bersihkan parameter URL tanpa reload halaman
+        window.history.replaceState({}, document.title, window.location.pathname);
       }
     }
 
@@ -536,24 +461,23 @@
         const response = await fetch(`${SCRIPT_URL}?action=getMentees`);
         if (response.ok) {
           const result = await response.json();
-          if (Array.isArray(result) && result.length > 0) {
-            menteesData = result.map((item, index) => ({
-              bil: parseInt(item.BIL || item.bil || (index + 1)),
-              nama: item.NAMA || item.nama || "",
-              kelas: item.KELAS || item.kelas || "",
-              mentor: item["NAMA GURU (MENTOR)"] || item.mentor || "-",
-              photoUrl: item.GAMBAR_URL || item.photoUrl || "",
-              reports: parseInt(item.JUMLAH_PERTEMUAN || item.reports || 0),
-              latestOprLink: item.LATEST_OPR_LINK || ""
-            }));
+          if (result && result.mentees && Array.isArray(result.mentees)) {
+            menteesData = result.mentees;
+            laporanList = result.reports || [];
+            localStorage.setItem('semekar_mentees_cache', JSON.stringify(menteesData));
+            localStorage.setItem('semekar_laporan_cache', JSON.stringify(laporanList));
+          } else if (Array.isArray(result) && result.length > 0) {
+            menteesData = result;
           }
         }
       } catch (err) {
-        const cached = localStorage.getItem('semekar_mentees_cache');
-        if (cached) menteesData = JSON.parse(cached);
+        console.warn("Menggunakan storan cache luar talian:", err);
+        const cachedMentees = localStorage.getItem('semekar_mentees_cache');
+        const cachedReports = localStorage.getItem('semekar_laporan_cache');
+        if (cachedMentees) menteesData = JSON.parse(cachedMentees);
+        if (cachedReports) laporanList = JSON.parse(cachedReports);
       } finally {
         hideLoadingDialog();
-        await semakCallbackOpr();
         populateMentorFilter();
         renderMentees();
         populateReportMenteeDropdown();
@@ -561,9 +485,10 @@
       }
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
-      fetchDataFromSheet();
+      await fetchDataFromSheet();
+      await semakCallbackOpr();
     });
 
     // 4. NAVIGASI TAB
@@ -733,14 +658,13 @@
       closeImageModal();
       showLoadingDialog(
         "Menyimpan Gambar Mentee...", 
-        "Sedang memuat naik dan merekodkan gambar mentee ke dalam Google Sheets..."
+        "Sedang merekodkan gambar mentee ke dalam Google Sheets..."
       );
 
       const mentee = menteesData.find(m => m.bil === activeMenteeForModal);
       if (mentee) {
         mentee.photoUrl = photoUrl;
         renderMentees();
-        localStorage.setItem('semekar_mentees_cache', JSON.stringify(menteesData));
       }
 
       try {
@@ -758,7 +682,7 @@
         console.error("Ralat simpan gambar:", err);
       } finally {
         hideLoadingDialog();
-        tunjukToast("Gambar mentee berjaya disimpan ke Google Sheet!");
+        tunjukToast("Gambar mentee berjaya disimpan!");
       }
     }
 
@@ -802,17 +726,17 @@
 
       const recentContainer = document.getElementById('recentReportsContainer');
       if (recentContainer) {
-        if (laporanList.length === 0) {
+        if (!laporanList || laporanList.length === 0) {
           recentContainer.innerHTML = `<div class="text-slate-400 py-3">Belum ada rekod laporan. Tekan 'Isi Laporan OPR' pada senarai mentee untuk memulakan pengisian di opr.semekar.com.</div>`;
         } else {
           recentContainer.innerHTML = laporanList.slice(0, 8).map(r => `
             <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200">
               <div>
-                <span class="font-bold text-slate-800">${r.nama}</span> (${r.kelas}) • <span class="text-blue-600 font-semibold">Sesi ${r.sesi}</span>
+                <span class="font-bold text-slate-800">${r.nama}</span> (${r.kelas}) • <span class="text-blue-600 font-semibold">${r.sesi}</span>
                 <p class="text-[11px] text-slate-500 mt-0.5">Mentor: ${r.mentor}</p>
               </div>
               <div class="text-right">
-                <span class="text-[10px] text-slate-400 block">${r.waktu || r.tarikh}</span>
+                <span class="text-[10px] text-slate-400 block">${r.timestamp || ''}</span>
                 <a href="${r.oprUrl}" target="_blank" class="text-blue-600 hover:underline font-bold inline-flex items-center gap-1 mt-0.5">
                   <i data-lucide="external-link" class="w-3 h-3"></i> Buka OPR
                 </a>
@@ -899,7 +823,7 @@
       document.getElementById('opr-kelas').textContent = mentee.kelas;
       document.getElementById('opr-sesi').textContent = `Pertemuan Ke-${sesi} (Menjelang SPM)`;
 
-      const matchedRecord = laporanList.find(r => r.bil === bil && r.sesi == sesi);
+      const matchedRecord = (laporanList || []).find(r => r.bil === bil && (r.sesi === `Pertemuan ${sesi}` || r.sesi == sesi));
       const oprLinkEl = document.getElementById('opr-url-link');
       if (matchedRecord && matchedRecord.oprUrl) {
         oprLinkEl.textContent = matchedRecord.oprUrl;
