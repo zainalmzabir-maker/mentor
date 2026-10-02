@@ -199,7 +199,7 @@
         </div>
       </div>
 
-      <!-- Senarai Laporan Terkini -->
+      <!-- Senarai Laporan Terkini Berserta Butang Kemaskini (Buka Tab Baharu) -->
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
         <h3 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
           <i data-lucide="link" class="w-4 h-4 text-indigo-600"></i> Rekod & Pautan Laporan OPR yang Telah Diisi
@@ -226,7 +226,7 @@
         <!-- Butang Cetak & Kemaskini -->
         <div class="w-full md:w-auto flex flex-wrap items-center gap-2">
           <button id="btnEditReportTop" onclick="kemaskiniLaporanOpr()" class="hidden w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-sm transition">
-            <i data-lucide="edit-3" class="w-4 h-4"></i> Kemaskini Laporan OPR
+            <i data-lucide="edit-3" class="w-4 h-4"></i> Kemaskini Laporan OPR (Tab Baharu)
           </button>
           <button id="btnPrintReport" onclick="cetakLaporanOpr()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-sm transition">
             <i data-lucide="printer" class="w-4 h-4"></i> Cetak Dokumen OPR
@@ -276,9 +276,8 @@
 
           <!-- KUMPULAN BUTANG TINDAKAN -->
           <div class="flex flex-wrap items-center gap-2">
-            <!-- BUTANG KEMASKINI LAPORAN OPR -->
             <button onclick="kemaskiniLaporanOpr()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition">
-              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Kemaskini Laporan (OPR)
+              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Kemaskini Laporan (Tab Baharu)
             </button>
             <a id="btnBukaTabLaporan" href="#" target="_blank" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl border border-slate-300 flex items-center gap-1.5 transition">
               <i data-lucide="external-link" class="w-3.5 h-3.5 text-blue-600"></i> Buka Tab Penuh
@@ -306,6 +305,30 @@
 
   </main>
 
+  <!-- ================= MODAL PILIH SESI UNTUK DIKEMASKINI ================= -->
+  <div id="pilihKemaskiniModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
+      <div class="flex justify-between items-center mb-3">
+        <h3 class="font-bold text-base text-slate-800 flex items-center gap-2">
+          <i data-lucide="edit-3" class="w-5 h-5 text-amber-500"></i> Pilih Sesi Untuk Dikemaskini
+        </h3>
+        <button onclick="closePilihKemaskiniModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <p class="text-xs text-slate-500 mb-4 bg-slate-50 p-2.5 rounded-xl border border-slate-200 font-medium" id="modalPilihMenteeTitle">Mentee: -</p>
+      
+      <p class="text-xs text-slate-600 mb-2 font-semibold">Pilih pertemuan yang ingin diedit di <strong class="text-blue-700">opr.semekar.com</strong>:</p>
+
+      <div id="senaraiSesiUntukEdit" class="space-y-2 max-h-72 overflow-y-auto pr-1">
+        <!-- Render senarai sesi murid -->
+      </div>
+
+      <div class="pt-4 border-t border-slate-100 flex justify-end mt-4">
+        <button onclick="closePilihKemaskiniModal()" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-xl text-xs font-semibold">Tutup</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= MODAL GAMBAR MENTEE ================= -->
   <div id="imageModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 flex items-center justify-center p-4 hidden no-print">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
@@ -319,9 +342,7 @@
       <p class="text-xs text-slate-500 mb-4 bg-slate-50 p-2.5 rounded-xl border border-slate-200 font-medium" id="modalMenteeName">Mentee: -</p>
 
       <div class="space-y-4">
-        <!-- BUTANG PILIHAN MUAT NAIK -->
         <div class="grid grid-cols-2 gap-3">
-          <!-- Butang 1: Kamera Telefon Pintar -->
           <button type="button" onclick="document.getElementById('cameraInput').click()" class="flex flex-col items-center justify-center gap-2 p-4 bg-blue-50 hover:bg-blue-100 border-2 border-dashed border-blue-300 rounded-2xl text-blue-800 transition active:scale-95">
             <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-md">
               <i data-lucide="camera" class="w-5 h-5"></i>
@@ -330,7 +351,6 @@
             <span class="text-[10px] text-blue-600 font-medium">Buka Kamera Telefon</span>
           </button>
 
-          <!-- Butang 2: Pilih Dari Galeri -->
           <button type="button" onclick="document.getElementById('galleryInput').click()" class="flex flex-col items-center justify-center gap-2 p-4 bg-slate-50 hover:bg-slate-100 border-2 border-dashed border-slate-300 rounded-2xl text-slate-700 transition active:scale-95">
             <div class="w-10 h-10 rounded-full bg-slate-700 text-white flex items-center justify-center shadow-md">
               <i data-lucide="image" class="w-5 h-5"></i>
@@ -340,17 +360,14 @@
           </button>
         </div>
 
-        <!-- Input Tersembunyi -->
         <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden" onchange="handleFileSelect(this)">
         <input type="file" id="galleryInput" accept="image/*" class="hidden" onchange="handleFileSelect(this)">
 
-        <!-- Pilihan Pautan URL -->
         <div>
           <label class="block text-[11px] font-semibold text-slate-500 mb-1">Atau Pautan URL Gambar:</label>
           <input type="url" id="imageUrlInput" placeholder="https://..." class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500" oninput="onUrlInput(this.value)">
         </div>
 
-        <!-- Pratonton Foto -->
         <div id="imagePreviewContainer" class="hidden text-center pt-2">
           <p class="text-[11px] text-slate-400 mb-1 font-semibold">Pratonton Foto:</p>
           <div class="relative inline-block">
@@ -420,39 +437,99 @@
       return null;
     }
 
-    // 2. FUNGSI MEMBINA URL EDIT KE OPR.SEMEKAR.COM
+    // 2. BINA URL MOD EDIT (TANPA ?id= YANG MENCETUSKAN VIEW/CETAKAN)
     function binaUrlEditOpr(oprUrl, bil, sesi) {
       if (!oprUrl) return 'https://opr.semekar.com';
 
       let repId = '';
-      if (oprUrl.includes('#id=')) {
+      const match = String(oprUrl).match(/(REP-\d+|OPR-\d+)/);
+      if (match) {
+        repId = match[1];
+      } else if (oprUrl.includes('#id=')) {
         repId = oprUrl.split('#id=')[1].split('&')[0];
       } else if (oprUrl.includes('id=')) {
-        const match = oprUrl.match(/id=([A-Za-z0-9\-_]+)/);
-        if (match) repId = match[1];
-      } else if (oprUrl.includes('/view/')) {
-        repId = oprUrl.split('/view/')[1].split('?')[0].split('#')[0];
+        repId = oprUrl.split('id=')[1].split('&')[0];
       }
 
       const returnUrl = window.location.origin + window.location.pathname;
+      const mentee = menteesData.find(m => m.bil === parseInt(bil));
+
+      // Hantar parameter edit tanpa parameter 'id='
       const params = new URLSearchParams({
         action: 'edit',
-        id: repId,
         edit: repId,
+        editId: repId,
         unit: 'HEM',
         bil: bil || '',
         sesi: sesi || '',
+        mentee: mentee ? mentee.nama : '',
+        kelas: mentee ? mentee.kelas : '',
+        mentor: mentee ? mentee.mentor : '',
         return_url: returnUrl
       });
 
-      // Menghantar arahan edit melalui parameter query dan hash
-      if (repId) {
-        return `https://opr.semekar.com/?${params.toString()}#edit=${encodeURIComponent(repId)}`;
-      }
-      return oprUrl;
+      return `https://opr.semekar.com/?${params.toString()}#edit=${encodeURIComponent(repId)}`;
     }
 
-    // 3. TINDAKAN BUTANG KEMASKINI
+    // 3. BUKA EDIT OPR DALAM TAB BAHARU (SENTIASA _blank)
+    function bukaEditOprTab(oprUrl, bil, sesi) {
+      const editUrl = binaUrlEditOpr(oprUrl, bil, sesi);
+      window.open(editUrl, '_blank');
+      tunjukToast(`Membuka borang kemaskini di tab baharu...`);
+    }
+
+    // 4. KEMASKINI DARI MODAL PILIHAN SESI (PAGE 1)
+    function openPilihKemaskiniModal(bil) {
+      const mentee = menteesData.find(m => m.bil === bil);
+      if (!mentee) return;
+
+      const studentReports = laporanList.filter(r => parseInt(r.bil) === bil);
+      
+      // Jika hanya ada 1 laporan, terus buka tab baharu
+      if (studentReports.length <= 1) {
+        const singleReport = studentReports[0] || { oprUrl: mentee.latestOprLink, sesi: 1 };
+        bukaEditOprTab(singleReport.oprUrl, bil, singleReport.sesi || 1);
+        return;
+      }
+
+      // Jika ada lebih daripada 1 laporan, paparkan modal pemilihan sesi
+      document.getElementById('modalPilihMenteeTitle').textContent = `Mentee #${mentee.bil}: ${mentee.nama} (${mentee.kelas})`;
+      const container = document.getElementById('senaraiSesiUntukEdit');
+      container.innerHTML = '';
+
+      // Susun mengikut sesi
+      const sorted = [...studentReports].sort((a, b) => {
+        const numA = parseInt(String(a.sesi).match(/\d+/) || [0])[0];
+        const numB = parseInt(String(b.sesi).match(/\d+/) || [0])[0];
+        return numA - numB;
+      });
+
+      sorted.forEach(r => {
+        const repId = (String(r.oprUrl).match(/(REP-\d+|OPR-\d+)/) || ['-'])[0];
+        const div = document.createElement('div');
+        div.className = "flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 rounded-2xl border border-slate-200 transition";
+        div.innerHTML = `
+          <div>
+            <span class="font-bold text-slate-800 text-xs">${r.sesi}</span>
+            <span class="text-[11px] font-mono text-blue-600 block">${repId}</span>
+            <span class="text-[10px] text-slate-400">${r.timestamp || ''}</span>
+          </div>
+          <button onclick="bukaEditOprTab('${r.oprUrl}', ${r.bil}, '${r.sesi}'); closePilihKemaskiniModal();" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition">
+            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Kemaskini
+          </button>
+        `;
+        container.appendChild(div);
+      });
+
+      document.getElementById('pilihKemaskiniModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closePilihKemaskiniModal() {
+      document.getElementById('pilihKemaskiniModal').classList.add('hidden');
+    }
+
+    // 5. KEMASKINI DARI HALAMAN CETAK LAPORAN (PAGE 3)
     function kemaskiniLaporanOpr() {
       const bil = parseInt(document.getElementById('reportMenteeSelect').value);
       const sesi = document.getElementById('reportSesiSelect').value;
@@ -463,36 +540,10 @@
         return;
       }
 
-      const editUrl = binaUrlEditOpr(matchedRecord.oprUrl, bil, sesi);
-      showLoadingDialog(
-        "Membuka Mod Kemaskini...", 
-        "Sedang menghubungkan ke borang kemaskini di opr.semekar.com..."
-      );
-
-      setTimeout(() => {
-        window.location.href = editUrl;
-      }, 500);
+      bukaEditOprTab(matchedRecord.oprUrl, bil, sesi);
     }
 
-    function kemaskiniLaporanDariCard(bil) {
-      const mentee = menteesData.find(m => m.bil === bil);
-      if (!mentee) return;
-
-      const latestSesi = mentee.reports || 1;
-      const matchedRecord = findReportForSession(bil, latestSesi) || { oprUrl: mentee.latestOprLink };
-      const editUrl = binaUrlEditOpr(matchedRecord.oprUrl, bil, latestSesi);
-
-      showLoadingDialog(
-        "Membuka Mod Kemaskini...", 
-        "Sedang membuka borang kemaskini bagi " + mentee.nama + " di opr.semekar.com..."
-      );
-
-      setTimeout(() => {
-        window.location.href = editUrl;
-      }, 500);
-    }
-
-    // 4. CALLBACK DARI OPR.SEMEKAR.COM (KEMASKINI VS SELESAI)
+    // 6. CALLBACK DARI OPR.SEMEKAR.COM
     async function semakCallbackOpr() {
       const urlParams = new URLSearchParams(window.location.search);
       const status = urlParams.get('status');
@@ -501,10 +552,9 @@
       const oprLink = urlParams.get('link') || urlParams.get('opr_link') || 'https://opr.semekar.com';
 
       if (status && bil) {
-        // JIKA STATUS KEMASKINI: Jangan tambah sesi, cuma kemaskini pautan
         if (status === 'kemaskini' || status === 'edit') {
           showLoadingDialog(
-            "Mengemaskini Rekod Laporan...", 
+            "Menyelaras Data Kemaskini...", 
             "Laporan telah dikemaskini di opr.semekar.com. Menyelaras pangkalan data..."
           );
 
@@ -529,7 +579,6 @@
           return;
         }
 
-        // JIKA STATUS SELESAI (Laporan Baharu): Tambah bilangan sesi
         if (status === 'selesai') {
           showLoadingDialog(
             "Merekodkan Pertemuan SPM...", 
@@ -562,15 +611,10 @@
       }
     }
 
-    // 5. ISI LAPORAN BAHARU
+    // 7. ISI LAPORAN BAHARU KE OPR.SEMEKAR.COM
     function pergiKeOprHem(bil, sesiKhusus) {
       const mentee = menteesData.find(m => m.bil === bil);
       if (!mentee) return;
-
-      showLoadingDialog(
-        "Membuka Portal OPR...", 
-        "Menyediakan borang pelaporan Unit HEM di opr.semekar.com..."
-      );
 
       const returnUrl = window.location.origin + window.location.pathname;
       const existingCount = laporanList.filter(r => parseInt(r.bil) === bil).length;
@@ -588,9 +632,8 @@
       });
 
       const urlOpr = `https://opr.semekar.com/?${params.toString()}`;
-      setTimeout(() => {
-        window.location.href = urlOpr;
-      }, 500);
+      window.open(urlOpr, '_blank');
+      tunjukToast("Membuka borang OPR di tab baharu...");
     }
 
     function pergiKeOprDariLaporan() {
@@ -599,7 +642,7 @@
       pergiKeOprHem(bil, sesi);
     }
 
-    // 6. AMBIL DATA DARI GOOGLE SHEETS
+    // 8. AMBIL DATA DARI GOOGLE SHEETS
     async function fetchDataFromSheet() {
       showLoadingDialog(
         "Menyegerakkan Data Terkini...", 
@@ -640,7 +683,7 @@
       await semakCallbackOpr();
     });
 
-    // 7. NAVIGASI TAB
+    // 9. NAVIGASI TAB
     function switchTab(tabId) {
       ['senarai', 'dashboard', 'laporan'].forEach(tab => {
         document.getElementById(`page-${tab}`).classList.add('hidden');
@@ -673,7 +716,7 @@
       select.value = currentVal || 'ALL';
     }
 
-    // 8. PAPARAN KAD MENTEE (PAGE 1)
+    // 10. PAPARAN KAD MENTEE (PAGE 1)
     function renderMentees() {
       const filter = document.getElementById('mentorFilter').value;
       const search = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -732,18 +775,18 @@
               </div>
             </div>
 
-            <!-- BAHAGIAN LAPORAN SEDIA ADA DENGAN BUTANG KEMASKINI PANTAS -->
-            ${m.latestOprLink ? `
+            <!-- BAHAGIAN LAPORAN DENGAN BUTANG KEMASKINI (BOLEH PILIH SESI) -->
+            ${m.reports > 0 ? `
               <div class="mb-3 px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between text-xs text-emerald-800">
                 <span class="truncate flex items-center gap-1.5 font-semibold">
-                  <i data-lucide="file-check" class="w-3.5 h-3.5 text-emerald-600"></i> Laporan Sedia Ada:
+                  <i data-lucide="file-check" class="w-3.5 h-3.5 text-emerald-600"></i> ${m.reports} Laporan Sedia Ada:
                 </span>
                 <div class="flex items-center gap-2 shrink-0">
                   <button onclick="paparLaporanMentee(${m.bil})" class="text-blue-600 hover:underline font-bold flex items-center gap-1">
                     Lihat <i data-lucide="eye" class="w-3 h-3"></i>
                   </button>
-                  <button onclick="kemaskiniLaporanDariCard(${m.bil})" class="text-amber-600 hover:underline font-bold flex items-center gap-1" title="Kemaskini Laporan OPR Terkini">
-                    Kemaskini <i data-lucide="edit-3" class="w-3 h-3"></i>
+                  <button onclick="openPilihKemaskiniModal(${m.bil})" class="text-amber-600 hover:underline font-bold flex items-center gap-1" title="Pilih Sesi Untuk Dikemaskini">
+                    Kemaskini ▾
                   </button>
                 </div>
               </div>
@@ -753,7 +796,7 @@
           <div class="pt-2 border-t border-slate-100 flex items-center gap-2">
             <button onclick="pergiKeOprHem(${m.bil})" 
               class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm transition">
-              <i data-lucide="file-plus" class="w-3.5 h-3.5"></i> Isi Laporan OPR (Unit HEM)
+              <i data-lucide="file-plus" class="w-3.5 h-3.5"></i> Isi Laporan OPR (Tab Baharu)
             </button>
             <button onclick="paparLaporanMentee(${m.bil})" title="Cetak / Lihat Laporan Mentee" class="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl border border-slate-200 transition">
               <i data-lucide="printer" class="w-4 h-4"></i>
@@ -771,7 +814,7 @@
       switchTab('laporan');
     }
 
-    // ================= 9. PENGENDALIAN KAMERA TELEFON & GAMBAR =================
+    // ================= 11. PENGENDALIAN KAMERA TELEFON & GAMBAR =================
     function openImageModal(bil, nama) {
       activeMenteeForModal = bil;
       const mentee = menteesData.find(m => m.bil === bil);
@@ -893,7 +936,7 @@
       }
     }
 
-    // 10. DASHBOARD & ANALITIK
+    // ================= 12. DASHBOARD DENGAN BUTANG KEMASKINI SETIAP REKOD =================
     let classChartInstance = null;
     let sessionChartInstance = null;
 
@@ -931,27 +974,37 @@
         tbody.appendChild(tr);
       }
 
+      // SENARAI LAPORAN PADA DASHBOARD: MEMPUNYAI BUTANG KEMASKINI & BUKA OPR DALAM TAB BAHARU
       const recentContainer = document.getElementById('recentReportsContainer');
       if (recentContainer) {
         if (!laporanList || laporanList.length === 0) {
           recentContainer.innerHTML = `<div class="text-slate-400 py-3">Belum ada rekod laporan. Tekan 'Isi Laporan OPR' pada senarai mentee untuk memulakan.</div>`;
         } else {
-          recentContainer.innerHTML = laporanList.slice(0, 8).map(r => `
-            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200">
+          recentContainer.innerHTML = laporanList.slice(0, 10).map(r => `
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-200 gap-3">
               <div>
-                <span class="font-bold text-slate-800">${r.nama}</span> (${r.kelas}) • <span class="text-blue-600 font-semibold">${r.sesi}</span>
-                <p class="text-[11px] text-slate-500 mt-0.5">Mentor: ${r.mentor}</p>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-slate-900">${r.nama}</span>
+                  <span class="px-2 py-0.5 bg-blue-100 text-blue-700 font-bold text-[10px] rounded-md">${r.kelas}</span>
+                  <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold text-[10px] rounded-md">${r.sesi}</span>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-0.5">Mentor: <span class="font-semibold text-slate-700">${r.mentor}</span> • <span class="text-slate-400">${r.timestamp || ''}</span></p>
               </div>
-              <div class="text-right flex items-center gap-2">
-                <span class="text-[10px] text-slate-400 block">${r.timestamp || ''}</span>
-                <a href="${r.oprUrl}" target="_blank" class="text-blue-600 hover:underline font-bold inline-flex items-center gap-1">
-                  <i data-lucide="external-link" class="w-3 h-3"></i> Buka OPR
+              <div class="flex items-center gap-2 shrink-0">
+                <!-- BUTANG KEMASKINI DI DASHBOARD (BUKA TAB BAHARU) -->
+                <button onclick="bukaEditOprTab('${r.oprUrl}', ${r.bil}, '${r.sesi}')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-[11px] rounded-xl shadow-sm flex items-center gap-1.5 transition">
+                  <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Kemaskini
+                </button>
+                <!-- BUTANG BUKA OPR DI DASHBOARD (BUKA TAB BAHARU) -->
+                <a href="${r.oprUrl}" target="_blank" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-[11px] rounded-xl border border-slate-300 flex items-center gap-1.5 transition">
+                  <i data-lucide="external-link" class="w-3.5 h-3.5 text-blue-600"></i> Buka OPR
                 </a>
               </div>
             </div>
           `).join('');
         }
       }
+      lucide.createIcons();
     }
 
     function initDashboardCharts() {
@@ -1006,7 +1059,7 @@
       });
     }
 
-    // 11. HALAMAN CETAKAN & PAPARAN OPR (PAGE 3)
+    // 13. HALAMAN CETAKAN & PAPARAN OPR (PAGE 3)
     function populateReportMenteeDropdown() {
       const select = document.getElementById('reportMenteeSelect');
       const currentVal = select.value;
@@ -1090,7 +1143,7 @@
         btnPrint.innerHTML = `<i data-lucide="printer" class="w-4 h-4"></i> Cetak Dokumen OPR`;
 
         const oprUrl = matchedRecord.oprUrl || `https://opr.semekar.com`;
-        const repId = oprUrl.includes('#id=') ? oprUrl.split('#id=')[1] : 'OPR-HEM';
+        const repId = (String(oprUrl).match(/(REP-\d+|OPR-\d+)/) || ['OPR-HEM'])[0];
         const repDate = matchedRecord.timestamp || 'Telah Disahkan';
 
         document.getElementById('viewReportIdBadge').textContent = `ID: ${repId}`;
